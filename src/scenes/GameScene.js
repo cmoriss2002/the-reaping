@@ -124,10 +124,16 @@ class GameScene extends Phaser.Scene {
     // Character badge + camp button
     const charColors = { knight: '#5588ff', mage: '#cc66ff', rogue: '#44ffaa' };
     this.add.text(W-20, 78, charType.toUpperCase(), { fontSize: '13px', fill: charColors[charType] || '#fff' }).setOrigin(1, 0).setScrollFactor(0).setDepth(D);
-    const campBtn = this.add.text(W-20, 94, '🔥 [C] Camp', { fontSize: '13px', fill: '#886633' }).setOrigin(1, 0).setScrollFactor(0).setDepth(D).setInteractive({ useHandCursor: true });
-    campBtn.on('pointerover', () => campBtn.setStyle({ fill: '#ffaa44' }));
-    campBtn.on('pointerout',  () => campBtn.setStyle({ fill: '#886633' }));
-    campBtn.on('pointerdown', () => { this.bankCurrentSouls(); this.scene.pause('GameScene'); this.scene.launch('CampOverlayScene', { gameScene: this }); });
+    const makeTouchBtn = (x, y, label, color, hoverColor, onClick) => {
+      const bg = this.add.rectangle(x, y, 80, 32, 0x111111, 0.7).setOrigin(1, 0).setScrollFactor(0).setDepth(D).setStrokeStyle(1, color).setInteractive({ useHandCursor: true });
+      const txt = this.add.text(x - 40, y + 16, label, { fontSize: '13px', fill: '#' + color.toString(16).padStart(6, '0') }).setOrigin(0.5, 0.5).setScrollFactor(0).setDepth(D);
+      bg.on('pointerover',  () => { bg.setFillStyle(0x222222, 0.9); txt.setStyle({ fill: '#' + hoverColor.toString(16).padStart(6, '0') }); });
+      bg.on('pointerout',   () => { bg.setFillStyle(0x111111, 0.7); txt.setStyle({ fill: '#' + color.toString(16).padStart(6, '0') }); });
+      bg.on('pointerdown',  onClick);
+      return bg;
+    };
+    makeTouchBtn(W - 8, 82, '🔥 Camp', 0x886633, 0xffaa44, () => { this.bankCurrentSouls(); this.scene.pause('GameScene'); this.scene.launch('CampOverlayScene', { gameScene: this }); });
+    makeTouchBtn(W - 8, 118, '⏸ Pause', 0x556688, 0x88aaff, () => { this.scene.pause('GameScene'); this.scene.launch('PauseScene', { gameScene: this }); });
 
     // Passive item row — bottom-left, well clear of any bars
     this.passiveRow   = this.add.graphics().setScrollFactor(0).setDepth(D);
@@ -815,6 +821,7 @@ class GameScene extends Phaser.Scene {
         level: this.player.level,
         time:  elapsed,
         alreadyBanked: true,
+        soulsEarned: this.soulsBanked,
         improved
       });
     });

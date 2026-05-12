@@ -55,6 +55,39 @@ class Player extends Phaser.GameObjects.Sprite {
     this.cursors   = scene.input.keyboard.createCursorKeys();
     this.wasd      = scene.input.keyboard.addKeys('W,A,S,D');
     this.spaceKey  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+    // Touch / click-to-move
+    this._pointerTarget = null;
+    this._lastTapTime   = 0;
+    scene.input.on('pointerdown', (ptr) => {
+      if (!this.active) return;
+      if (scene.input.hitTestPointer(ptr).length > 0) return;
+      const now = scene.time.now;
+      if (now - this._lastTapTime < 300) {
+        this._doubleTapDash(ptr);
+      }
+      this._lastTapTime   = now;
+      this._pointerTarget = { x: ptr.worldX, y: ptr.worldY };
+    });
+    scene.input.on('pointermove', (ptr) => {
+      if (!this.active || !ptr.isDown) return;
+      if (scene.input.hitTestPointer(ptr).length > 0) return;
+      this._pointerTarget = { x: ptr.worldX, y: ptr.worldY };
+    });
+    scene.input.on('pointerup', () => { this._pointerTarget = null; });
+  }
+
+  _doubleTapDash(ptr) {
+    if (!ptr) return;
+    this._pointerTarget = null;
+    const dx = ptr.worldX - this.x;
+    const dy = ptr.worldY - this.y;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    if (len > 0) {
+      this.lastMoveDir.x = dx / len;
+      this.lastMoveDir.y = dy / len;
+    }
+    this._triggerDash(this.scene.time.now);
   }
 
   applyCharStats(charType) {
@@ -116,12 +149,26 @@ class Player extends Phaser.GameObjects.Sprite {
 
   handleMovement() {
     let vx = 0, vy = 0;
+    let fromPointer = false;
     if (this.cursors.left.isDown  || this.wasd.A.isDown) vx = -this.speed;
     if (this.cursors.right.isDown || this.wasd.D.isDown) vx =  this.speed;
     if (this.cursors.up.isDown    || this.wasd.W.isDown) vy = -this.speed;
     if (this.cursors.down.isDown  || this.wasd.S.isDown) vy =  this.speed;
 
-    if (vx !== 0 && vy !== 0) { vx *= 0.707; vy *= 0.707; }
+    if (vx === 0 && vy === 0 && this._pointerTarget) {
+      const dx = this._pointerTarget.x - this.x;
+      const dy = this._pointerTarget.y - this.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist > 5) {
+        vx = (dx / dist) * this.speed;
+        vy = (dy / dist) * this.speed;
+        fromPointer = true;
+      } else {
+        this._pointerTarget = null;
+      }
+    }
+
+    if (!fromPointer && vx !== 0 && vy !== 0) { vx *= 0.707; vy *= 0.707; }
 
     if (vx !== 0 || vy !== 0) {
       this.lastMoveDir.x = vx;
@@ -143,6 +190,11 @@ class Player extends Phaser.GameObjects.Sprite {
   handleDash(time) {
     if (this.isDashing) return;
     if (!Phaser.Input.Keyboard.JustDown(this.spaceKey)) return;
+    this._triggerDash(time);
+  }
+
+  _triggerDash(time) {
+    if (this.isDashing) return;
     if (time - this.lastDashTime < this.dashCooldownMs) return;
 
     let dx = this.lastMoveDir.x, dy = this.lastMoveDir.y;

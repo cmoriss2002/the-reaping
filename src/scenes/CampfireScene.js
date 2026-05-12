@@ -9,11 +9,13 @@ class CampfireScene extends Phaser.Scene {
     // Souls are banked progressively as the player visits camp mid-run.
     // On death, GameScene.bankCurrentSouls() has already credited them —
     // so we just show what was earned total without adding again.
-    const earned = (fromMenu || data.alreadyBanked)
+    const earned = fromMenu
       ? 0
-      : MetaProgress.calcRunSouls(data.kills || 0, data.wave || 1, data.level || 1);
-    const soulsBeforeRun = MetaProgress.souls;
-    if (earned > 0) MetaProgress.addSouls(earned);
+      : data.alreadyBanked
+        ? (data.soulsEarned || 0)
+        : MetaProgress.calcRunSouls(data.kills || 0, data.wave || 1, data.level || 1);
+    const soulsBeforeRun = MetaProgress.souls - (data.alreadyBanked ? earned : 0);
+    if (!data.alreadyBanked && earned > 0) MetaProgress.addSouls(earned);
     const soulsAfterRun = MetaProgress.souls;
 
     // ── Background ────────────────────────────────────────────────────────

@@ -4,6 +4,10 @@ const config = {
   height: 720,
   backgroundColor: '#0d0d1a',
   pixelArt: true,
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH
+  },
   physics: {
     default: 'arcade',
     arcade: { gravity: { y: 0 }, debug: false }
