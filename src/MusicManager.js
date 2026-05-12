@@ -159,38 +159,57 @@ var MusicManager = {
     this._loopId = setTimeout(() => this._loopMenu(gen), (dur - 0.2) * 1000);
   },
 
-  // ── Game: dark ambient with rhythmic pulse ────────────────────────────────
+  // ── Game: dark driving action ─────────────────────────────────────────────
   _loopGame(gen) {
     if (this._gen !== gen) return;
-    const bpm  = 88;
+    const bpm  = 110;
     const beat = 60 / bpm;
     const bars = 8;
     const dur  = bars * 4 * beat;
     const t    = this._ctx.currentTime;
 
-    // Bass pad
+    // Sub-bass drone for weight
     this._pad(36.7, dur + 0.5, 0.28, 'sine');
-    this._pad(73.4, dur + 0.5, 0.16, 'sine');
 
-    // Rhythmic kick pulse
+    // Walking bass — moves every 2 bars: D F G F
+    [[73.4, 0], [87.3, 2], [98.0, 4], [87.3, 6]].forEach(([f, bar]) => {
+      this._note(f,     t + bar * beat * 4, beat * 7.8, 0.24, 'sine');
+      this._note(f * 2, t + bar * beat * 4, beat * 7.8, 0.10, 'sawtooth');
+    });
+
+    // Kick: strong on 1, medium on 3, off-beat flick on bar 2 of each phrase
     for (let i = 0; i < bars * 4; i++) {
       const bt = t + i * beat;
-      if (i % 4 === 0) this._kick(bt, 0.10);
-      if (i % 4 === 2) this._kick(bt, 0.05);
+      if (i % 4 === 0) this._kick(bt, 0.28);
+      if (i % 4 === 2) this._kick(bt, 0.18);
+      if (i % 8 === 7) this._kick(bt, 0.10);
     }
 
-    // Sparse melody — semi-random but musically valid
-    const scale = [146.8, 174.6, 196, 220, 261.6, 293.7];
-    for (let i = 0; i < bars; i++) {
-      if (Math.random() > 0.35) {
-        const f = scale[Math.floor(Math.random() * scale.length)];
-        this._note(f, t + i * beat * 2, beat * 1.6, 0.15);
-      }
+    // Rhythmic off-beat pulse for forward drive
+    for (let i = 0; i < bars * 4; i++) {
+      if (i % 2 === 1) this._note(146.8, t + i * beat, beat * 0.30, 0.07, 'square');
     }
 
-    // Mid chord swell every 4 bars
-    this._pad(146.8, beat * 4, 0.12);
-    this._pad(220,   beat * 4, 0.10);
+    // Structured 4-bar melody in D minor — repeated twice
+    // D  F  A  G | F  E  D  C | D  F  G  A | C5 A  G  F
+    const phrase = [
+      [293.7,  0], [349.2,  1], [440,    2], [392,    3],
+      [349.2,  4], [329.6,  5], [293.7,  6], [261.6,  7],
+      [293.7,  8], [349.2,  9], [392,   10], [440,   11],
+      [523.3, 12], [440,   13], [392,   14], [349.2, 15],
+    ];
+    for (let rep = 0; rep < 2; rep++) {
+      phrase.forEach(([f, b]) => {
+        this._note(f, t + (rep * 16 + b) * beat, beat * 0.78, 0.16, 'triangle');
+      });
+    }
+
+    // Tension chord stabs on the back half (bars 5-8)
+    [[146.8, 220, 16], [174.6, 261.6, 20], [196, 293.7, 24], [174.6, 246.9, 28]]
+      .forEach(([f1, f2, b]) => {
+        this._note(f1, t + b * beat, beat * 1.6, 0.10, 'square');
+        this._note(f2, t + b * beat, beat * 1.6, 0.08, 'square');
+      });
 
     this._loopId = setTimeout(() => this._loopGame(gen), (dur - 0.15) * 1000);
   },
