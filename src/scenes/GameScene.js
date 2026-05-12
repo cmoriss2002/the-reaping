@@ -203,7 +203,7 @@ class GameScene extends Phaser.Scene {
     const slides = [
       {
         title: '⚔  YOUR MISSION',
-        body:  'You are the Soul Warden.\nWaves of undead are rising from the graveyard.\nSurvive as long as you can.',
+        body:  'The Reaping has begun.\nWaves of undead are rising from the graveyard.\nSurvive as long as you can.',
         hint:  'Click or press any key to continue'
       },
       {

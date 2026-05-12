@@ -158,13 +158,13 @@ class MainMenuScene extends Phaser.Scene {
     graves.fillRect(799, H * 0.568, 24, 8);
 
     // ── Title ─────────────────────────────────────────────────────────────
-    this.add.text(W/2, 148, 'SOUL', {
-      fontSize: '82px', fill: '#aaddff', fontStyle: 'bold',
+    this.add.text(W/2, 148, 'THE', {
+      fontSize: '62px', fill: '#aaddff', fontStyle: 'bold',
       stroke: '#224488', strokeThickness: 7
     }).setOrigin(0.5);
 
-    this.add.text(W/2, 244, 'WARDEN', {
-      fontSize: '62px', fill: '#FFD700', fontStyle: 'bold',
+    this.add.text(W/2, 228, 'REAPING', {
+      fontSize: '82px', fill: '#FFD700', fontStyle: 'bold',
       stroke: '#442200', strokeThickness: 5
     }).setOrigin(0.5);
 
