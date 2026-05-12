@@ -56,25 +56,65 @@ class Player extends Phaser.GameObjects.Sprite {
     this.wasd      = scene.input.keyboard.addKeys('W,A,S,D');
     this.spaceKey  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-    // Touch / click-to-move
+    // Read control mode from settings
+    try {
+      const s = JSON.parse(localStorage.getItem('fab_settings') || '{}');
+      this._controlMode = s.controlMode || 'tap';
+    } catch(e) { this._controlMode = 'tap'; }
+
+    const JOY_R = 65;
     this._pointerTarget = null;
     this._lastTapTime   = 0;
+    this._joyBase       = null;
+    this._joyVec        = { x: 0, y: 0 };
+    this._joyGfx        = scene.add.graphics().setScrollFactor(0).setDepth(490);
+
     scene.input.on('pointerdown', (ptr) => {
       if (!this.active) return;
       if (scene.input.hitTestPointer(ptr).length > 0) return;
       const now = scene.time.now;
-      if (now - this._lastTapTime < 300) {
-        this._doubleTapDash(ptr);
+      if (now - this._lastTapTime < 300) { this._doubleTapDash(ptr); }
+      this._lastTapTime = now;
+      if (this._controlMode === 'joystick') {
+        this._joyBase = { x: ptr.x, y: ptr.y };
+        this._joyVec  = { x: 0, y: 0 };
+        this._drawJoystick(ptr.x, ptr.y, ptr.x, ptr.y, JOY_R);
+      } else {
+        this._pointerTarget = { x: ptr.worldX, y: ptr.worldY - 100 };
       }
-      this._lastTapTime   = now;
-      this._pointerTarget = { x: ptr.worldX, y: ptr.worldY - 100 };
     });
     scene.input.on('pointermove', (ptr) => {
       if (!this.active || !ptr.isDown) return;
       if (scene.input.hitTestPointer(ptr).length > 0) return;
-      this._pointerTarget = { x: ptr.worldX, y: ptr.worldY - 100 };
+      if (this._controlMode === 'joystick' && this._joyBase) {
+        const dx = ptr.x - this._joyBase.x;
+        const dy = ptr.y - this._joyBase.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        this._joyVec = dist > 0 ? { x: dx / dist, y: dy / dist } : { x: 0, y: 0 };
+        const clamp = Math.min(dist, JOY_R);
+        this._drawJoystick(this._joyBase.x, this._joyBase.y,
+          this._joyBase.x + this._joyVec.x * clamp,
+          this._joyBase.y + this._joyVec.y * clamp, JOY_R);
+      } else if (this._controlMode === 'tap') {
+        this._pointerTarget = { x: ptr.worldX, y: ptr.worldY - 100 };
+      }
     });
-    scene.input.on('pointerup', () => { this._pointerTarget = null; });
+    scene.input.on('pointerup', () => {
+      this._joyBase = null;
+      this._joyVec  = { x: 0, y: 0 };
+      this._joyGfx.clear();
+      this._pointerTarget = null;
+    });
+  }
+
+  _drawJoystick(bx, by, kx, ky, r) {
+    this._joyGfx.clear();
+    this._joyGfx.fillStyle(0xffffff, 0.12);
+    this._joyGfx.fillCircle(bx, by, r);
+    this._joyGfx.lineStyle(2, 0xffffff, 0.35);
+    this._joyGfx.strokeCircle(bx, by, r);
+    this._joyGfx.fillStyle(0xffffff, 0.45);
+    this._joyGfx.fillCircle(kx, ky, r * 0.38);
   }
 
   _doubleTapDash(ptr) {
@@ -155,16 +195,23 @@ class Player extends Phaser.GameObjects.Sprite {
     if (this.cursors.up.isDown    || this.wasd.W.isDown) vy = -this.speed;
     if (this.cursors.down.isDown  || this.wasd.S.isDown) vy =  this.speed;
 
-    if (vx === 0 && vy === 0 && this._pointerTarget) {
-      const dx = this._pointerTarget.x - this.x;
-      const dy = this._pointerTarget.y - this.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist > 5) {
-        vx = (dx / dist) * this.speed;
-        vy = (dy / dist) * this.speed;
+    if (vx === 0 && vy === 0) {
+      if (this._controlMode === 'joystick' && this._joyBase &&
+          (this._joyVec.x !== 0 || this._joyVec.y !== 0)) {
+        vx = this._joyVec.x * this.speed;
+        vy = this._joyVec.y * this.speed;
         fromPointer = true;
-      } else {
-        this._pointerTarget = null;
+      } else if (this._pointerTarget) {
+        const dx = this._pointerTarget.x - this.x;
+        const dy = this._pointerTarget.y - this.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 5) {
+          vx = (dx / dist) * this.speed;
+          vy = (dy / dist) * this.speed;
+          fromPointer = true;
+        } else {
+          this._pointerTarget = null;
+        }
       }
     }
 

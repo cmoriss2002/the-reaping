@@ -70,8 +70,24 @@ class SettingsScene extends Phaser.Scene {
       });
     });
 
+    // Mobile controls toggle
+    this.add.text(W/2, 318, 'MOBILE CONTROLS', { fontSize: '16px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5);
+    let ctrlMode = (() => { try { return JSON.parse(localStorage.getItem('fab_settings') || '{}').controlMode || 'tap'; } catch(e) { return 'tap'; } })();
+    const tapBtn = this.add.rectangle(W/2 - 75, 348, 130, 32, ctrlMode === 'tap'      ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setInteractive({ useHandCursor: true });
+    const joyBtn = this.add.rectangle(W/2 + 75, 348, 130, 32, ctrlMode === 'joystick' ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setInteractive({ useHandCursor: true });
+    const tapTxt = this.add.text(W/2 - 75, 348, 'Tap to Move', { fontSize: '13px', fill: '#aaccee' }).setOrigin(0.5);
+    const joyTxt = this.add.text(W/2 + 75, 348, 'Joystick',    { fontSize: '13px', fill: '#aaccee' }).setOrigin(0.5);
+    const setCtrl = (mode) => {
+      ctrlMode = mode;
+      tapBtn.setFillStyle(mode === 'tap'      ? 0x1a3a5a : 0x111122);
+      joyBtn.setFillStyle(mode === 'joystick' ? 0x1a3a5a : 0x111122);
+      this.saveVolumes(mode);
+    };
+    tapBtn.on('pointerdown', () => setCtrl('tap'));
+    joyBtn.on('pointerdown', () => setCtrl('joystick'));
+
     // Controls display
-    this.add.text(W/2, 348, 'CONTROLS', { fontSize: '20px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5);
+    this.add.text(W/2, 382, 'CONTROLS', { fontSize: '20px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5);
     [
       ['WASD / Arrow Keys', 'Move'],
       ['Space',             'Dash (1.5s cd, i-frames)'],
@@ -79,7 +95,7 @@ class SettingsScene extends Phaser.Scene {
       ['C',                 'Open Camp (upgrades)'],
       ['P / ESC',           'Pause'],
     ].forEach(([key, desc], i) => {
-      const y = 378 + i * 30;
+      const y = 412 + i * 30;
       this.add.text(W/2 - 160, y, key,  { fontSize: '18px', fill: '#4488cc' }).setOrigin(1, 0.5);
       this.add.text(W/2 - 140, y, desc, { fontSize: '18px', fill: '#889aaa' }).setOrigin(0, 0.5);
     });
@@ -167,11 +183,13 @@ class SettingsScene extends Phaser.Scene {
     });
   }
 
-  saveVolumes() {
+  saveVolumes(controlMode) {
     try {
+      const existing = JSON.parse(localStorage.getItem('fab_settings') || '{}');
       const mv = MusicManager._gain ? MusicManager._gain.gain.value / 0.55 : 1;
       const sv = SoundManager._master ? SoundManager._master.gain.value / 0.28 : 1;
-      localStorage.setItem('fab_settings', JSON.stringify({ musicVol: mv, sfxVol: sv }));
+      const mode = controlMode !== undefined ? controlMode : (existing.controlMode || 'tap');
+      localStorage.setItem('fab_settings', JSON.stringify({ ...existing, musicVol: mv, sfxVol: sv, controlMode: mode }));
     } catch (e) {}
   }
 
