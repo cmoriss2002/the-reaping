@@ -261,7 +261,7 @@ class GameScene extends Phaser.Scene {
 
     this.input.on('pointerdown', advance);
     this.input.keyboard.on('keydown', (e) => {
-      if (['SPACE','ENTER','ESCAPE'].some(k => e.key === k || e.code === 'Key'+k)) return;
+      if (['SPACE','ENTER','ESCAPE','W','A','S','D','ARROWUP','ARROWDOWN','ARROWLEFT','ARROWRIGHT'].some(k => e.key.toUpperCase() === k)) return;
       advance();
     });
   }
