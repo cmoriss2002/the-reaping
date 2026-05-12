@@ -67,12 +67,12 @@ class Player extends Phaser.GameObjects.Sprite {
         this._doubleTapDash(ptr);
       }
       this._lastTapTime   = now;
-      this._pointerTarget = { x: ptr.worldX, y: ptr.worldY };
+      this._pointerTarget = { x: ptr.worldX, y: ptr.worldY - 100 };
     });
     scene.input.on('pointermove', (ptr) => {
       if (!this.active || !ptr.isDown) return;
       if (scene.input.hitTestPointer(ptr).length > 0) return;
-      this._pointerTarget = { x: ptr.worldX, y: ptr.worldY };
+      this._pointerTarget = { x: ptr.worldX, y: ptr.worldY - 100 };
     });
     scene.input.on('pointerup', () => { this._pointerTarget = null; });
   }
