@@ -180,7 +180,7 @@ class MainMenuScene extends Phaser.Scene {
       { key: 'dragon',   label: 'Dragon',   scale: 0.9 },
     ];
     enemies.forEach((e, i) => {
-      const cx = 300 + i * 180;
+      const cx = W/2 - 270 + i * 180;
       this.add.sprite(cx, 430, e.key).setScale(e.scale);
       this.add.text(cx, 468, e.label, { fontSize: '14px', fill: '#889aaa' }).setOrigin(0.5);
     });

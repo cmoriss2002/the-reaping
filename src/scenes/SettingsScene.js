@@ -193,6 +193,16 @@ class SettingsScene extends Phaser.Scene {
     } catch (e) {}
   }
 
+  static saveFromOutside(controlMode) {
+    try {
+      const existing = JSON.parse(localStorage.getItem('fab_settings') || '{}');
+      const mv = MusicManager._gain ? MusicManager._gain.gain.value / 0.55 : 1;
+      const sv = SoundManager._master ? SoundManager._master.gain.value / 0.28 : 1;
+      const mode = controlMode !== undefined ? controlMode : (existing.controlMode || 'tap');
+      localStorage.setItem('fab_settings', JSON.stringify({ ...existing, musicVol: mv, sfxVol: sv, controlMode: mode }));
+    } catch(e) {}
+  }
+
   static loadVolumes() {
     try {
       const s = JSON.parse(localStorage.getItem('fab_settings') || '{}');

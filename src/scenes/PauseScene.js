@@ -210,6 +210,13 @@ class PauseScene extends Phaser.Scene {
       this.scene.start('MainMenuScene');
     });
 
+    const settingsLink = this.add.text(W/2, btnY - 44, '⚙  Settings', {
+      fontSize: '15px', fill: '#446688'
+    }).setOrigin(0.5).setDepth(4).setInteractive({ useHandCursor: true });
+    settingsLink.on('pointerover', () => settingsLink.setStyle({ fill: '#88aacc' }));
+    settingsLink.on('pointerout',  () => settingsLink.setStyle({ fill: '#446688' }));
+    settingsLink.on('pointerdown', () => this.showSettings(W, H));
+
     this.add.text(W/2, H - 20, 'Press ESC or P to resume', {
       fontSize: '14px', fill: '#445566'
     }).setOrigin(0.5).setDepth(4);
@@ -237,6 +244,54 @@ class PauseScene extends Phaser.Scene {
     bg.on('pointerout',  () => bg.setFillStyle(color));
     bg.on('pointerdown', onClick);
     return bg;
+  }
+
+  showSettings(W, H) {
+    const D = 20;
+    const items = [];
+    const track = (o) => { items.push(o); return o; };
+    const dismiss = () => items.forEach(o => o.destroy());
+
+    track(this.add.rectangle(W/2, H/2, W, H, 0x000000, 0.6).setDepth(D).setInteractive());
+    track(this.add.rectangle(W/2, H/2, 460, 360, 0x0c0c1e).setDepth(D).setStrokeStyle(2, 0x5577aa));
+    track(this.add.text(W/2, H/2 - 155, '⚙  SETTINGS', {
+      fontSize: '24px', fill: '#FFD700', fontStyle: 'bold'
+    }).setOrigin(0.5).setDepth(D + 1));
+
+    // Volume sliders
+    [
+      { label: 'Music Volume', get: () => MusicManager._gain ? MusicManager._gain.gain.value / 0.55 : 1,
+        set: (v) => { if (MusicManager._gain) MusicManager._gain.gain.value = v * 0.55; } },
+      { label: 'SFX Volume',   get: () => SoundManager._master ? SoundManager._master.gain.value / 0.28 : 1,
+        set: (v) => { if (SoundManager._master) SoundManager._master.gain.value = v * 0.28; } },
+    ].forEach((s, i) => {
+      const cy = H/2 - 90 + i * 70;
+      const barX = W/2 - 160, barW = 320, barH = 10;
+      track(this.add.text(W/2, cy - 22, s.label, { fontSize: '17px', fill: '#ccccdd' }).setOrigin(0.5).setDepth(D + 1));
+      const fill   = track(this.add.rectangle(barX, cy, barW * s.get(), barH, 0x4488cc).setOrigin(0, 0.5).setDepth(D + 2));
+      const trk    = track(this.add.rectangle(W/2, cy, barW, barH, 0x222244).setDepth(D + 1).setInteractive());
+      const handle = track(this.add.circle(barX + barW * s.get(), cy, 11, 0xaaccff).setDepth(D + 3).setInteractive({ draggable: true }));
+      const pctLbl = track(this.add.text(W/2, cy + 18, `${Math.round(s.get() * 100)}%`, { fontSize: '13px', fill: '#8899aa' }).setOrigin(0.5).setDepth(D + 1));
+      const update = (pct) => { s.set(pct); fill.setSize(barW * pct, barH); handle.setX(barX + barW * pct); pctLbl.setText(`${Math.round(pct * 100)}%`); SettingsScene.saveFromOutside(); };
+      trk.on('pointerdown', (ptr) => update(Phaser.Math.Clamp((ptr.x - barX) / barW, 0, 1)));
+      this.input.setDraggable(handle);
+      handle.on('drag', (ptr) => update(Phaser.Math.Clamp((ptr.x - barX) / barW, 0, 1)));
+    });
+
+    // Control mode toggle
+    track(this.add.text(W/2, H/2 + 58, 'MOBILE CONTROLS', { fontSize: '14px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5).setDepth(D + 1));
+    let ctrlMode = (() => { try { return JSON.parse(localStorage.getItem('fab_settings') || '{}').controlMode || 'tap'; } catch(e) { return 'tap'; } })();
+    const tapBtn = track(this.add.rectangle(W/2 - 75, H/2 + 88, 130, 32, ctrlMode === 'tap'      ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setDepth(D + 1).setInteractive({ useHandCursor: true }));
+    const joyBtn = track(this.add.rectangle(W/2 + 75, H/2 + 88, 130, 32, ctrlMode === 'joystick' ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setDepth(D + 1).setInteractive({ useHandCursor: true }));
+    track(this.add.text(W/2 - 75, H/2 + 88, 'Tap to Move', { fontSize: '13px', fill: '#aaccee' }).setOrigin(0.5).setDepth(D + 2));
+    track(this.add.text(W/2 + 75, H/2 + 88, 'Joystick',    { fontSize: '13px', fill: '#aaccee' }).setOrigin(0.5).setDepth(D + 2));
+    const setCtrl = (mode) => { ctrlMode = mode; tapBtn.setFillStyle(mode === 'tap' ? 0x1a3a5a : 0x111122); joyBtn.setFillStyle(mode === 'joystick' ? 0x1a3a5a : 0x111122); SettingsScene.saveFromOutside(mode); };
+    tapBtn.on('pointerdown', () => setCtrl('tap'));
+    joyBtn.on('pointerdown', () => setCtrl('joystick'));
+
+    const closeBtn = track(this.add.rectangle(W/2, H/2 + 148, 160, 36, 0x1a2244).setStrokeStyle(1, 0x4466aa).setDepth(D + 1).setInteractive({ useHandCursor: true }));
+    track(this.add.text(W/2, H/2 + 148, 'Close', { fontSize: '17px', fill: '#88aaff', fontStyle: 'bold' }).setOrigin(0.5).setDepth(D + 2));
+    closeBtn.on('pointerdown', dismiss);
   }
 
   resume(data) {
