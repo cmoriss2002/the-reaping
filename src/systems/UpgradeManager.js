@@ -33,13 +33,39 @@ class UpgradeManager {
     });
   }
 
+  // Weapon id each "add_*" upgrade gives
+  _weaponFor(upgradeId) {
+    const map = {
+      add_orb: 'magic_orb', add_arrow: 'arrow', add_slash: 'sword_slash',
+      add_boomerang: 'boomerang', add_fire_nova: 'fire_nova', add_daggers: 'daggers'
+    };
+    return map[upgradeId] || null;
+  },
+
   // Build a combined pool of weapon upgrades + passive items filtered for this player
   _buildPool(player) {
     const pool = [];
 
-    // Regular upgrades
+    // Regular upgrades — weapon cards become "upgrade" cards if already owned
     UPGRADES.forEach(u => {
-      pool.push({ ...u, _type: 'upgrade' });
+      const wid = this._weaponFor(u.id);
+      if (wid && player && player.weapons.some(w => w.id === wid)) {
+        // Player already has this weapon — offer a boost instead
+        pool.push({
+          ...u,
+          _type: 'upgrade',
+          name: u.name + ' +',
+          description: '+20% damage\n−10% cooldown',
+          apply: (pl) => {
+            pl.weapons.filter(w => w.id === wid).forEach(w => {
+              w.damage   = Math.floor(w.damage   * 1.20);
+              w.cooldown = Math.floor(w.cooldown * 0.90);
+            });
+          }
+        });
+      } else {
+        pool.push({ ...u, _type: 'upgrade' });
+      }
     });
 
     // Passives — exclude maxed ones
