@@ -71,6 +71,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
     scene.input.on('pointerdown', (ptr) => {
       if (!this.active) return;
+      if (!ptr.leftButtonDown()) return;
       if (scene.input.hitTestPointer(ptr).length > 0) return;
       const now = scene.time.now;
       if (now - this._lastTapTime < 300) { this._doubleTapDash(ptr); }
