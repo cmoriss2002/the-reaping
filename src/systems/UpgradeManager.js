@@ -40,7 +40,7 @@ class UpgradeManager {
       add_boomerang: 'boomerang', add_fire_nova: 'fire_nova', add_daggers: 'daggers'
     };
     return map[upgradeId] || null;
-  },
+  }
 
   // Build a combined pool of weapon upgrades + passive items filtered for this player
   _buildPool(player) {
