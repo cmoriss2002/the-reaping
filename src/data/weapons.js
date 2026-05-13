@@ -69,10 +69,8 @@ const WEAPONS = {
   },
   daggers: {
     id: 'daggers', name: 'Daggers', texture: 'dagger', bodySize: 8,
-    damage: 16, cooldown: 650, projectileSpeed: 750, lifetime: 800,
+    damage: 16, cooldown: 600, projectileSpeed: 750, lifetime: 800,
     piercing: false, color: 0xccddee,
-    special: 'spread3', // fires 3 projectiles in a spread
-    spreadAngle: 18,    // degrees between each dagger
-    description: 'Throws 3 daggers in a spread at enemies'
+    description: 'Throws a fast dagger at the nearest enemy'
   }
 };

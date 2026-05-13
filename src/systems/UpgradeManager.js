@@ -51,15 +51,24 @@ class UpgradeManager {
       const wid = this._weaponFor(u.id);
       if (wid && player && player.weapons.some(w => w.id === wid)) {
         // Player already has this weapon — offer a boost instead
+        const isDaggers = wid === 'daggers';
         pool.push({
           ...u,
           _type: 'upgrade',
           name: u.name + ' +',
-          description: '+20% damage\n−10% cooldown',
+          description: isDaggers && !player.weapons.find(w => w.id === 'daggers')?.special
+            ? '3-way spread\n+10% damage'
+            : '+20% damage\n−10% cooldown',
           apply: (pl) => {
             pl.weapons.filter(w => w.id === wid).forEach(w => {
-              w.damage   = Math.floor(w.damage   * 1.20);
-              w.cooldown = Math.floor(w.cooldown * 0.90);
+              if (isDaggers && !w.special) {
+                w.special      = 'spread3';
+                w.spreadAngle  = 18;
+                w.damage       = Math.floor(w.damage * 1.10);
+              } else {
+                w.damage   = Math.floor(w.damage   * 1.20);
+                w.cooldown = Math.floor(w.cooldown * 0.90);
+              }
             });
           }
         });
@@ -87,14 +96,14 @@ class UpgradeManager {
     return pool;
   }
 
-  getChoices(count = 3, player) {
+  getChoices(count = 3, player, wave = 1) {
     const level = player ? player.level : 1;
     const pool  = this._buildPool(player);
 
-    // Gate by level: no weapons before lv3, no rares before lv5
+    // Gate by level and wave: no weapons before lv3 AND wave 3, no rares before lv5
     const available = pool.filter(u => {
-      if (this._weaponFor(u.id) && level < 3) return false;
-      if (u.rarity === 'rare' && level < 5)   return false;
+      if (this._weaponFor(u.id) && (level < 3 || wave < 3)) return false;
+      if (u.rarity === 'rare' && level < 5)                  return false;
       return true;
     });
 

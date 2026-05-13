@@ -732,7 +732,7 @@ class GameScene extends Phaser.Scene {
   }
 
   openUpgradePicker() {
-    const choices = this.upgradeManager.getChoices(3, this.player);
+    const choices = this.upgradeManager.getChoices(3, this.player, this.waveManager.wave);
     this.scene.pause('GameScene');
     this.scene.launch('UpgradeScene', { choices, gameScene: this });
   }
