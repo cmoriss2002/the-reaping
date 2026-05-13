@@ -73,7 +73,22 @@ class UpgradeManager {
           }
         });
       } else {
-        pool.push({ ...u, _type: 'upgrade' });
+        // Check if picking this weapon would immediately trigger a synergy evolution
+        const syn = wid ? SYNERGIES.find(s =>
+          s.weapons.includes(wid) &&
+          (player.passives[s.passive] || 0) >= 1 &&
+          !player.weapons.some(w => w.id === s.into)
+        ) : null;
+        if (syn) {
+          pool.push({
+            ...u,
+            _type: 'upgrade',
+            name: `✨ ${syn.name}`,
+            description: syn.desc,
+          });
+        } else {
+          pool.push({ ...u, _type: 'upgrade' });
+        }
       }
     });
 
