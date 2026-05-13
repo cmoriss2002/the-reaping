@@ -13,7 +13,7 @@ const config = {
     default: 'arcade',
     arcade: { gravity: { y: 0 }, debug: false }
   },
-  scene: [BootScene, MainMenuScene, CharacterSelectScene, GameScene, UpgradeScene, PauseScene, CampOverlayScene, SettingsScene, CampfireScene, GameOverScene]
+  scene: [BootScene, MainMenuScene, CharacterSelectScene, GameScene, UpgradeScene, PauseScene, CampOverlayScene, SettingsScene, CampfireScene, GameOverScene, LeaderboardScene]
 };
 
 const game = new Phaser.Game(config);

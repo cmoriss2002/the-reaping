@@ -85,6 +85,9 @@ class CampfireScene extends Phaser.Scene {
           duration: 300, ease: 'Back.easeOut'
         });
       });
+
+      // Score submission prompt
+      this.time.delayedCall(800, () => this._showScoreSubmit(data));
     }
 
     // Divider
@@ -357,5 +360,80 @@ class CampfireScene extends Phaser.Scene {
         { fontSize: '12px', fill: '#333344' }
       ).setOrigin(0.5));
     }
+  }
+
+  _showScoreSubmit(data) {
+    const storedName = localStorage.getItem('reaping_player_name') || '';
+
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.78);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:monospace';
+
+    const box = document.createElement('div');
+    box.style.cssText = 'background:#0c0c1e;border:2px solid #5577aa;padding:32px;text-align:center;min-width:300px;border-radius:4px';
+
+    const title = document.createElement('p');
+    title.textContent = '📋 SUBMIT SCORE';
+    title.style.cssText = 'color:#FFD700;font-size:18px;font-weight:bold;margin:0 0 8px';
+
+    const sub = document.createElement('p');
+    sub.textContent = `Wave ${data.wave}  ·  ${data.kills} kills  ·  Lv ${data.level}`;
+    sub.style.cssText = 'color:#667788;font-size:13px;margin:0 0 18px';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'Your name';
+    input.maxLength = 20;
+    input.value = storedName;
+    input.style.cssText = 'width:200px;padding:10px;background:#1a1a2e;border:1px solid #4488cc;color:#fff;font-size:15px;text-align:center;border-radius:3px;outline:none;display:block;margin:0 auto 18px;box-sizing:border-box';
+
+    const btnRow = document.createElement('div');
+    btnRow.style.cssText = 'display:flex;gap:10px;justify-content:center';
+
+    const submitBtn = document.createElement('button');
+    submitBtn.textContent = 'Submit';
+    submitBtn.style.cssText = 'padding:10px 24px;background:#1e3d7a;border:1px solid #4488cc;color:#fff;font-size:14px;cursor:pointer;border-radius:3px';
+
+    const skipBtn = document.createElement('button');
+    skipBtn.textContent = 'Skip';
+    skipBtn.style.cssText = 'padding:10px 24px;background:#1a1a2e;border:1px solid #445566;color:#888;font-size:14px;cursor:pointer;border-radius:3px';
+
+    btnRow.appendChild(submitBtn);
+    btnRow.appendChild(skipBtn);
+    box.appendChild(title);
+    box.appendChild(sub);
+    box.appendChild(input);
+    box.appendChild(btnRow);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    setTimeout(() => input.focus(), 100);
+
+    const dismiss = () => overlay.remove();
+
+    const submit = async () => {
+      const name = input.value.trim();
+      if (!name) { input.focus(); return; }
+      localStorage.setItem('reaping_player_name', name);
+      submitBtn.textContent = 'Submitting...';
+      submitBtn.disabled = true;
+      try {
+        await fetch('/api/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            character: data.charType || 'knight',
+            wave:  data.wave  || 1,
+            kills: data.kills || 0,
+            level: data.level || 1,
+            time:  data.time  || 0
+          })
+        });
+      } catch(e) {}
+      dismiss();
+    };
+
+    submitBtn.addEventListener('click', submit);
+    skipBtn.addEventListener('click', dismiss);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
   }
 }

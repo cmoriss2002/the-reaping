@@ -6,6 +6,7 @@ class GameScene extends Phaser.Scene {
 
   create(data) {
     const charType = (data && data.charType) || 'knight';
+    this.charType = charType;
 
     // ── World & physics ───────────────────────────────────────────────────
     this.physics.world.setBounds(0, 0, WORLD_W, WORLD_H);
@@ -820,6 +821,7 @@ class GameScene extends Phaser.Scene {
         wave:  this.waveManager.wave,
         level: this.player.level,
         time:  elapsed,
+        charType: this.charType,
         alreadyBanked: true,
         soulsEarned: this.soulsBanked,
         improved

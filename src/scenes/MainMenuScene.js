@@ -199,6 +199,13 @@ class MainMenuScene extends Phaser.Scene {
       this.scene.start('CharacterSelectScene');
     });
 
+    // Leaderboard button
+    const lbBtn = this.add.text(W/2, 610, '🏆 Leaderboard', { fontSize: '18px', fill: '#aa8833' })
+      .setOrigin(0.5).setInteractive({ useHandCursor: true });
+    lbBtn.on('pointerover', () => lbBtn.setStyle({ fill: '#FFD700' }));
+    lbBtn.on('pointerout',  () => lbBtn.setStyle({ fill: '#aa8833' }));
+    lbBtn.on('pointerdown', () => this.scene.start('LeaderboardScene', { from: 'MainMenuScene' }));
+
     // Settings button
     const setBtn = this.add.text(30, 30, '⚙ Settings', { fontSize: '16px', fill: '#446688' })
       .setInteractive({ useHandCursor: true });
