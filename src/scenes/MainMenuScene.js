@@ -207,18 +207,20 @@ class MainMenuScene extends Phaser.Scene {
     lbBtn.on('pointerdown', () => this.scene.start('LeaderboardScene', { from: 'MainMenuScene' }));
 
     // Settings button
-    const setBtn = this.add.text(30, 30, '⚙ Settings', { fontSize: '16px', fill: '#446688' })
-      .setInteractive({ useHandCursor: true });
-    setBtn.on('pointerover', () => setBtn.setStyle({ fill: '#88aacc' }));
-    setBtn.on('pointerout',  () => setBtn.setStyle({ fill: '#446688' }));
-    setBtn.on('pointerdown', () => this.scene.start('SettingsScene', { from: 'MainMenuScene' }));
+    const setBg = this.add.rectangle(64, 36, 120, 44, 0x111122)
+      .setStrokeStyle(1, 0x334455).setInteractive({ useHandCursor: true });
+    const setBtn = this.add.text(64, 36, '⚙ Settings', { fontSize: '15px', fill: '#446688' }).setOrigin(0.5);
+    setBg.on('pointerover', () => { setBg.setFillStyle(0x1a2233); setBtn.setStyle({ fill: '#88aacc' }); });
+    setBg.on('pointerout',  () => { setBg.setFillStyle(0x111122); setBtn.setStyle({ fill: '#446688' }); });
+    setBg.on('pointerdown', () => this.scene.start('SettingsScene', { from: 'MainMenuScene' }));
 
     // How to play
-    const helpBtn = this.add.text(W - 30, 30, '? How to Play', { fontSize: '16px', fill: '#446688' })
-      .setOrigin(1, 0).setInteractive({ useHandCursor: true });
-    helpBtn.on('pointerover', () => helpBtn.setStyle({ fill: '#88aacc' }));
-    helpBtn.on('pointerout',  () => helpBtn.setStyle({ fill: '#446688' }));
-    helpBtn.on('pointerdown', () => this.showHelp(W, H));
+    const helpBg = this.add.rectangle(W - 76, 36, 138, 44, 0x111122)
+      .setStrokeStyle(1, 0x334455).setInteractive({ useHandCursor: true });
+    const helpBtn = this.add.text(W - 76, 36, '? How to Play', { fontSize: '15px', fill: '#446688' }).setOrigin(0.5);
+    helpBg.on('pointerover', () => { helpBg.setFillStyle(0x1a2233); helpBtn.setStyle({ fill: '#88aacc' }); });
+    helpBg.on('pointerout',  () => { helpBg.setFillStyle(0x111122); helpBtn.setStyle({ fill: '#446688' }); });
+    helpBg.on('pointerdown', () => this.showHelp(W, H));
 
     MetaProgress.load();
 

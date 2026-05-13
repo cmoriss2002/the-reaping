@@ -93,11 +93,12 @@ class CharacterSelectScene extends Phaser.Scene {
       this.tweens.add({ targets: [card, preview], alpha: 1, x: origX, duration: 220 + i * 70, ease: 'Quad.easeOut' });
     });
 
-    const back = this.add.text(56, 40, '← Back', { fontSize: '17px', fill: '#555566' })
-      .setInteractive({ useHandCursor: true });
-    back.on('pointerover', () => back.setStyle({ fill: '#aaaacc' }));
-    back.on('pointerout',  () => back.setStyle({ fill: '#555566' }));
-    back.on('pointerdown', () => this.scene.start('MainMenuScene'));
+    const backBg = this.add.rectangle(60, 36, 110, 44, 0x111122)
+      .setStrokeStyle(1, 0x445566).setInteractive({ useHandCursor: true });
+    const back = this.add.text(60, 36, '← Back', { fontSize: '17px', fill: '#8899bb' }).setOrigin(0.5);
+    backBg.on('pointerover', () => { backBg.setFillStyle(0x1a2233); back.setStyle({ fill: '#aabbdd' }); });
+    backBg.on('pointerout',  () => { backBg.setFillStyle(0x111122); back.setStyle({ fill: '#8899bb' }); });
+    backBg.on('pointerdown', () => this.scene.start('MainMenuScene'));
 
     this.cameras.main.fadeIn(280, 0, 0, 0);
   }
