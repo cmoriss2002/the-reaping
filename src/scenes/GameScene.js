@@ -314,7 +314,7 @@ class GameScene extends Phaser.Scene {
       if (!gem || !gem.active) { this.xpGems.splice(i, 1); continue; }
 
       const dist = Phaser.Math.Distance.Between(gem.x, gem.y, this.player.x, this.player.y);
-      if (dist < this.player.xpPickupRadius) {
+      if (dist < 18) {
         SoundManager.play('xp_pickup');
         this.juice.hitSpark(gem.x, gem.y, 0x00ffaa);
         this.player.gainXP(gem.xpValue);
