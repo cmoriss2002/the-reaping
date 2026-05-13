@@ -30,6 +30,7 @@ class WaveManager {
   }
 
   spawnBoss() {
+    this.scene._chapterBreak = false; // safety reset in case it got stuck
     const cam = this.scene.cameras.main;
     const x   = cam.scrollX + cam.width / 2;
     const y   = cam.scrollY - 80; // enter from top

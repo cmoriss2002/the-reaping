@@ -797,10 +797,17 @@ class GameScene extends Phaser.Scene {
       // Bonus upgrade + any queued level-ups
       this.openUpgradePicker();
       for (let i = 0; i < pending; i++) this.openUpgradePicker();
-      // Wave countdown starts after the upgrade picker closes
-      this.events.once('resume', () => {
-        this.waveManager.nextWaveAt      = this.time.now + 2000;
-        this.waveManager.countdownActive = true;
+      // Poll until the upgrade picker closes, then start the next wave countdown.
+      // More reliable than events.once('resume') which can be consumed early.
+      const waitForResume = this.time.addEvent({
+        delay: 100, loop: true,
+        callback: () => {
+          if (!this.scene.isPaused('GameScene')) {
+            waitForResume.remove();
+            this.waveManager.nextWaveAt      = this.time.now + 2000;
+            this.waveManager.countdownActive = true;
+          }
+        }
       });
     });
   }
