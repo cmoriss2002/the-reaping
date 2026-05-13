@@ -92,9 +92,9 @@ class SettingsScene extends Phaser.Scene {
     this.add.text(W/2, 390, 'CLOUD SAVE CODE', { fontSize: '14px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5);
     this.add.rectangle(W/2, 416, 320, 32, 0x111122).setStrokeStyle(1, 0x4488cc);
     this.add.text(W/2, 416, code, { fontSize: '18px', fill: '#FFD700', fontStyle: 'bold' }).setOrigin(0.5);
-    this.add.text(W/2, 436, 'Enter this code on another device to sync your progress', { fontSize: '11px', fill: '#445566' }).setOrigin(0.5);
+    this.add.text(W/2, 442, 'Enter this code on another device to sync your progress', { fontSize: '13px', fill: '#667788' }).setOrigin(0.5);
 
-    const importBtn = this.add.text(W/2, 458, '↓  Import from code', { fontSize: '14px', fill: '#446688' })
+    const importBtn = this.add.text(W/2, 464, '↓  Import from code', { fontSize: '14px', fill: '#446688' })
       .setOrigin(0.5).setInteractive({ useHandCursor: true });
     importBtn.on('pointerover', () => importBtn.setStyle({ fill: '#88aacc' }));
     importBtn.on('pointerout',  () => importBtn.setStyle({ fill: '#446688' }));
