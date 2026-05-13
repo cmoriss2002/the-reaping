@@ -186,9 +186,9 @@ class MainMenuScene extends Phaser.Scene {
     });
 
     // ── Buttons ───────────────────────────────────────────────────────────
-    const btnBg = this.add.rectangle(W/2, 548, 280, 56, 0x224488)
+    const btnBg = this.add.rectangle(W/2, 530, 280, 56, 0x224488)
       .setInteractive({ useHandCursor: true });
-    const btnText = this.add.text(W/2, 548, 'START RUN', {
+    const btnText = this.add.text(W/2, 530, 'START RUN', {
       fontSize: '28px', fill: '#ffffff', fontStyle: 'bold'
     }).setOrigin(0.5);
 
@@ -200,7 +200,7 @@ class MainMenuScene extends Phaser.Scene {
     });
 
     // Leaderboard button
-    const lbBtn = this.add.text(W/2, 610, '🏆 Leaderboard', { fontSize: '18px', fill: '#aa8833' })
+    const lbBtn = this.add.text(W/2, 592, '🏆 Leaderboard', { fontSize: '18px', fill: '#aa8833' })
       .setOrigin(0.5).setInteractive({ useHandCursor: true });
     lbBtn.on('pointerover', () => lbBtn.setStyle({ fill: '#FFD700' }));
     lbBtn.on('pointerout',  () => lbBtn.setStyle({ fill: '#aa8833' }));
@@ -222,7 +222,7 @@ class MainMenuScene extends Phaser.Scene {
 
     MetaProgress.load();
 
-    this.add.text(W/2, 600, 'WASD / Arrow Keys to move  •  Space to dash  •  Level up = choose an upgrade', {
+    this.add.text(W/2, 630, 'WASD / Arrow Keys to move  •  Space to dash  •  Level up = choose an upgrade', {
       fontSize: '17px', fill: '#445566'
     }).setOrigin(0.5);
 
