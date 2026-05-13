@@ -88,12 +88,50 @@ class UpgradeManager {
   }
 
   getChoices(count = 3, player) {
-    const pool     = this._buildPool(player);
-    const shuffled = pool.sort(() => Math.random() - 0.5);
+    const level = player ? player.level : 1;
+    const pool  = this._buildPool(player);
+
+    // Gate by level: no weapons before lv3, no rares before lv5
+    const available = pool.filter(u => {
+      if (this._weaponFor(u.id) && level < 3) return false;
+      if (u.rarity === 'rare' && level < 5)   return false;
+      return true;
+    });
+
+    // Rarity weights scale with level
+    const weight = (u) => {
+      const r = u.rarity || 'common';
+      if (r === 'common')   return level < 5 ? 60 : level < 8 ? 40 : 25;
+      if (r === 'uncommon') return level < 5 ? 30 : level < 8 ? 40 : 40;
+      if (r === 'rare')     return level < 5 ?  0 : level < 8 ? 20 : 35;
+      return 10;
+    };
+
     // Prefer not repeating recently offered items
-    const fresh  = shuffled.filter(u => !this.offeredIds.includes(u.id));
-    const source = fresh.length >= count ? fresh : shuffled;
-    const chosen = source.slice(0, count);
+    const fresh = available.filter(u => !this.offeredIds.includes(u.id));
+    const src   = fresh.length >= count ? fresh : available;
+
+    // Weighted sampling without replacement, max 1 weapon per set
+    const chosen    = [];
+    const remaining = [...src];
+    for (let i = 0; i < count && remaining.length > 0; i++) {
+      const total = remaining.reduce((sum, u) => sum + weight(u), 0);
+      let r = Math.random() * total;
+      let idx = remaining.length - 1;
+      for (let j = 0; j < remaining.length; j++) {
+        r -= weight(remaining[j]);
+        if (r <= 0) { idx = j; break; }
+      }
+      chosen.push(remaining[idx]);
+      remaining.splice(idx, 1);
+      // After picking a weapon, remove all other weapons so only one appears
+      if (this._weaponFor(chosen[chosen.length - 1].id)) {
+        for (let j = remaining.length - 1; j >= 0; j--) {
+          if (this._weaponFor(remaining[j].id)) remaining.splice(j, 1);
+        }
+      }
+    }
+
     this.offeredIds = chosen.map(u => u.id);
     return chosen;
   }
