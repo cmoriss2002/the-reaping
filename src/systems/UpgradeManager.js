@@ -18,10 +18,8 @@ class UpgradeManager {
       const alreadyEvolved = player.weapons.some(w => w.id === syn.into);
       if (!hasWeapons || !hasPassive || alreadyEvolved) return;
 
-      // Remove the base weapon, add the evolved one
-      const idx = player.weapons.findIndex(w => w.id === syn.evolves);
-      if (idx !== -1) {
-        player.weapons.splice(idx, 1);
+      // Keep the base weapon and add the evolved one alongside it
+      if (!player.weapons.some(w => w.id === syn.into)) {
         player.addWeapon(syn.into);
         // Announce
         if (player.scene && player.scene.juice) {

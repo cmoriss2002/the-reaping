@@ -77,7 +77,13 @@ class UpgradeScene extends Phaser.Scene {
         card.setStrokeStyle(2, rColor);
       });
       card.on('pointerdown', () => {
-        data.gameScene.upgradeManager.applyUpgrade(upgrade.id, data.gameScene.player);
+        const player = data.gameScene.player;
+        if (upgrade.apply) {
+          upgrade.apply(player);
+          data.gameScene.upgradeManager.checkSynergies(player);
+        } else {
+          data.gameScene.upgradeManager.applyUpgrade(upgrade.id, player);
+        }
         this.scene.stop('UpgradeScene');
         this.scene.resume('GameScene');
       });
