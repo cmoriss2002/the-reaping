@@ -41,7 +41,7 @@ class UpgradeManager {
   }
 
   // Build a combined pool of weapon upgrades + passive items filtered for this player
-  _buildPool(player) {
+  _buildPool(player, wave = 1) {
     const pool = [];
 
     // Regular upgrades — weapon cards become "upgrade" cards if already owned
@@ -49,17 +49,20 @@ class UpgradeManager {
       const wid = this._weaponFor(u.id);
       if (wid && player && player.weapons.some(w => w.id === wid)) {
         // Player already has this weapon — offer a boost instead
-        const isDaggers = wid === 'daggers';
+        const isDaggers   = wid === 'daggers';
+        const hasSpread   = !!player.weapons.find(w => w.id === 'daggers')?.special;
+        const spreadReady = wave >= 6; // spread unlocks later so it doesn't feel instant
+        const offerSpread = isDaggers && !hasSpread && spreadReady;
         pool.push({
           ...u,
           _type: 'upgrade',
           name: u.name + ' +',
-          description: isDaggers && !player.weapons.find(w => w.id === 'daggers')?.special
+          description: offerSpread
             ? '3-way spread\n+10% damage'
             : '+20% damage\n−10% cooldown',
           apply: (pl) => {
             pl.weapons.filter(w => w.id === wid).forEach(w => {
-              if (isDaggers && !w.special) {
+              if (offerSpread) {
                 w.special      = 'spread3';
                 w.spreadAngle  = 18;
                 w.damage       = Math.floor(w.damage * 1.10);
@@ -111,7 +114,7 @@ class UpgradeManager {
 
   getChoices(count = 3, player, wave = 1) {
     const level = player ? player.level : 1;
-    const pool  = this._buildPool(player);
+    const pool  = this._buildPool(player, wave);
 
     // Gate by level and wave: no weapons before lv3 AND wave 3, no rares before lv5
     const available = pool.filter(u => {
