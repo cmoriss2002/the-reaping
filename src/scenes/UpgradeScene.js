@@ -86,6 +86,7 @@ class UpgradeScene extends Phaser.Scene {
         }
         this.scene.stop('UpgradeScene');
         this.scene.resume('GameScene');
+        if (data.onClose) data.gameScene.time.delayedCall(50, data.onClose);
       });
 
       // Slide-in animation

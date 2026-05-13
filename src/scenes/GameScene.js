@@ -731,10 +731,10 @@ class GameScene extends Phaser.Scene {
     this.openUpgradePicker();
   }
 
-  openUpgradePicker() {
+  openUpgradePicker(onClose) {
     const choices = this.upgradeManager.getChoices(3, this.player, this.waveManager.wave);
     this.scene.pause('GameScene');
-    this.scene.launch('UpgradeScene', { choices, gameScene: this });
+    this.scene.launch('UpgradeScene', { choices, gameScene: this, onClose });
   }
 
   onBossDied() {
@@ -744,72 +744,65 @@ class GameScene extends Phaser.Scene {
     const chapter = Math.floor(this.waveManager.wave / 5);
     const W = this.scale.width, H = this.scale.height;
 
-    // Capture souls earned this chapter BEFORE banking (banking resets the delta to 0)
     const soulsEarned = MetaProgress.calcRunSouls(this.stats.kills, this.waveManager.wave, this.player.level) - this.soulsBanked;
     this.bankCurrentSouls();
-
-    // Dramatic pause + flash
     this.juice.flash(200, 200, 80, 600);
     MusicManager.play('campfire');
 
-    // Chapter complete overlay
-    const overlay = this.add.rectangle(W/2, H/2, W, H, 0x000000, 0)
-      .setScrollFactor(0).setDepth(600);
-    this.tweens.add({ targets: overlay, fillAlpha: 0.65, duration: 600 });
-
-    const chapterText = this.add.text(W/2, H/2 - 80, `Chapter ${chapter} Complete!`, {
-      fontSize: '52px', fill: '#FFD700', fontStyle: 'bold',
-      stroke: '#000000', strokeThickness: 6
+    const overlay    = this.add.rectangle(W/2, H/2, W, H, 0x000000, 0).setScrollFactor(0).setDepth(600);
+    const chapterTxt = this.add.text(W/2, H/2 - 80, `Chapter ${chapter} Complete!`, {
+      fontSize: '52px', fill: '#FFD700', fontStyle: 'bold', stroke: '#000000', strokeThickness: 6
     }).setOrigin(0.5).setScrollFactor(0).setDepth(601).setAlpha(0);
-
-    const subText = this.add.text(W/2, H/2, `Waves ${(chapter-1)*5 + 1}–${chapter*5} cleared`, {
+    const subTxt     = this.add.text(W/2, H/2, `Waves ${(chapter-1)*5+1}–${chapter*5} cleared`, {
       fontSize: '22px', fill: '#aabbcc'
     }).setOrigin(0.5).setScrollFactor(0).setDepth(601).setAlpha(0);
-
-    const soulText = this.add.text(W/2, H/2 + 50, `💀 +${soulsEarned} souls banked`, {
+    const soulTxt    = this.add.text(W/2, H/2 + 50, `💀 +${soulsEarned} souls banked`, {
       fontSize: '18px', fill: '#cc9922'
     }).setOrigin(0.5).setScrollFactor(0).setDepth(601).setAlpha(0);
-
-    const continueText = this.add.text(W/2, H/2 + 110, 'Preparing bonus upgrade…', {
-      fontSize: '15px', fill: '#556677'
+    const continueTxt = this.add.text(W/2, H/2 + 110, 'Tap / click to continue…', {
+      fontSize: '15px', fill: '#99aabb'
     }).setOrigin(0.5).setScrollFactor(0).setDepth(601).setAlpha(0);
 
-    this.tweens.add({
-      targets: [chapterText, subText, soulText, continueText],
-      alpha: 1, duration: 500, delay: 400
-    });
+    this.tweens.add({ targets: overlay, fillAlpha: 0.65, duration: 600 });
+    this.tweens.add({ targets: [chapterTxt, subTxt, soulTxt, continueTxt], alpha: 1, duration: 500, delay: 400 });
 
-    // After 3s, offer a free bonus upgrade then start the next wave
-    this.time.delayedCall(3200, () => {
-      [overlay, chapterText, subText, soulText, continueText].forEach(o => o.destroy());
-      this._chapterBreak = false;
-      // Heal player
-      this.player.hp = Math.min(this.player.hp + Math.floor(this.player.maxHp * 0.25), this.player.maxHp);
-      this.juice.floatText(this.player.x, this.player.y - 40, '+25% HP restored', '#44ff88', 18);
-      // Start next wave properly so WaveManager doesn't stall
-      this.waveManager.betweenWaves = true;
-      this.waveManager.countdownActive = false;
-      // Give a bonus upgrade pick, then resume music
-      this._bossDeathInProgress = false;
-      const pending = this._pendingLevelUps || 0;
-      this._pendingLevelUps = 0;
-      MusicManager.play('game');
-      // Bonus upgrade + any queued level-ups
-      this.openUpgradePicker();
-      for (let i = 0; i < pending; i++) this.openUpgradePicker();
-      // Poll until the upgrade picker closes, then start the next wave countdown.
-      // More reliable than events.once('resume') which can be consumed early.
-      const waitForResume = this.time.addEvent({
-        delay: 100, loop: true,
-        callback: () => {
-          if (!this.scene.isPaused('GameScene')) {
-            waitForResume.remove();
-            this.waveManager.nextWaveAt      = this.time.now + 2000;
-            this.waveManager.countdownActive = true;
-          }
-        }
-      });
-    });
+    const dismiss = () => {
+      [overlay, chapterTxt, subTxt, soulTxt, continueTxt].forEach(o => o.destroy());
+      this.input.off('pointerdown', dismiss);
+      this._startPostBossUpgrades();
+    };
+
+    // Auto-dismiss after 4s or on tap/click
+    this.time.delayedCall(4000, dismiss);
+    this.input.once('pointerdown', dismiss);
+  }
+
+  _startPostBossUpgrades() {
+    this._chapterBreak = false;
+    this._bossDeathInProgress = false;
+
+    this.player.hp = Math.min(this.player.hp + Math.floor(this.player.maxHp * 0.25), this.player.maxHp);
+    this.juice.floatText(this.player.x, this.player.y - 40, '+25% HP restored', '#44ff88', 18);
+
+    this.waveManager.betweenWaves    = true;
+    this.waveManager.countdownActive = false;
+    MusicManager.play('game');
+
+    // Queue: 1 bonus pick + any level-ups deferred during boss fight
+    this._postBossQueue = 1 + (this._pendingLevelUps || 0);
+    this._pendingLevelUps = 0;
+    this._nextPostBossPick();
+  }
+
+  _nextPostBossPick() {
+    if (this._postBossQueue <= 0) {
+      // All done — start next wave countdown
+      this.waveManager.nextWaveAt      = this.time.now + 2000;
+      this.waveManager.countdownActive = true;
+      return;
+    }
+    this._postBossQueue--;
+    this.openUpgradePicker(() => this._nextPostBossPick());
   }
 
   endRun() {
