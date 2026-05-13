@@ -280,7 +280,7 @@ class PauseScene extends Phaser.Scene {
 
     // Control mode toggle
     track(this.add.text(W/2, H/2 + 58, 'MOBILE CONTROLS', { fontSize: '14px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5).setDepth(D + 1));
-    let ctrlMode = (() => { try { return JSON.parse(localStorage.getItem('fab_settings') || '{}').controlMode || 'tap'; } catch(e) { return 'tap'; } })();
+    let ctrlMode = (() => { try { return JSON.parse(localStorage.getItem('fab_settings') || '{}').controlMode || 'joystick'; } catch(e) { return 'joystick'; } })();
     const tapBtn = track(this.add.rectangle(W/2 - 75, H/2 + 88, 130, 32, ctrlMode === 'tap'      ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setDepth(D + 1).setInteractive({ useHandCursor: true }));
     const joyBtn = track(this.add.rectangle(W/2 + 75, H/2 + 88, 130, 32, ctrlMode === 'joystick' ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setDepth(D + 1).setInteractive({ useHandCursor: true }));
     track(this.add.text(W/2 - 75, H/2 + 88, 'Tap to Move', { fontSize: '13px', fill: '#aaccee' }).setOrigin(0.5).setDepth(D + 2));

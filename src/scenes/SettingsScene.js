@@ -72,7 +72,7 @@ class SettingsScene extends Phaser.Scene {
 
     // Mobile controls toggle
     this.add.text(W/2, 306, 'MOBILE CONTROLS', { fontSize: '16px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5);
-    let ctrlMode = (() => { try { return JSON.parse(localStorage.getItem('fab_settings') || '{}').controlMode || 'tap'; } catch(e) { return 'tap'; } })();
+    let ctrlMode = (() => { try { return JSON.parse(localStorage.getItem('fab_settings') || '{}').controlMode || 'joystick'; } catch(e) { return 'joystick'; } })();
     const tapBtn = this.add.rectangle(W/2 - 75, 334, 130, 32, ctrlMode === 'tap'      ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setInteractive({ useHandCursor: true });
     const joyBtn = this.add.rectangle(W/2 + 75, 334, 130, 32, ctrlMode === 'joystick' ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setInteractive({ useHandCursor: true });
     const tapTxt = this.add.text(W/2 - 75, 334, 'Tap to Move', { fontSize: '13px', fill: '#aaccee' }).setOrigin(0.5);

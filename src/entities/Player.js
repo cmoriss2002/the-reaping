@@ -59,8 +59,8 @@ class Player extends Phaser.GameObjects.Sprite {
     // Read control mode from settings
     try {
       const s = JSON.parse(localStorage.getItem('fab_settings') || '{}');
-      this._controlMode = s.controlMode || 'tap';
-    } catch(e) { this._controlMode = 'tap'; }
+      this._controlMode = s.controlMode || 'joystick';
+    } catch(e) { this._controlMode = 'joystick'; }
 
     const JOY_R = 65;
     this._pointerTarget = null;
