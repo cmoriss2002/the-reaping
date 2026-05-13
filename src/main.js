@@ -6,7 +6,8 @@ const config = {
   pixelArt: true,
   scale: {
     mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    expandParent: true
   },
   fps: { target: 30, forceSetTimeOut: true },
   physics: {
@@ -23,3 +24,9 @@ document.addEventListener('click', function unlock() {
   SoundManager.resume();
   document.removeEventListener('click', unlock);
 }, { once: true });
+
+// Resize canvas when device orientation changes
+window.addEventListener('resize', () => game.scale.refresh());
+window.addEventListener('orientationchange', () => {
+  setTimeout(() => game.scale.refresh(), 200);
+});
