@@ -169,7 +169,7 @@ class MainMenuScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     this.add.text(W/2, 318, 'Roguelite Auto-Battler', {
-      fontSize: '22px', fill: '#778899', fontStyle: 'italic'
+      fontSize: '22px', fill: '#aabbcc', fontStyle: 'italic'
     }).setOrigin(0.5);
 
     // ── Enemy previews ────────────────────────────────────────────────────
@@ -182,7 +182,7 @@ class MainMenuScene extends Phaser.Scene {
     enemies.forEach((e, i) => {
       const cx = W/2 - 270 + i * 180;
       this.add.sprite(cx, 430, e.key).setScale(e.scale);
-      this.add.text(cx, 468, e.label, { fontSize: '14px', fill: '#889aaa' }).setOrigin(0.5);
+      this.add.text(cx, 468, e.label, { fontSize: '14px', fill: '#aabbcc' }).setOrigin(0.5);
     });
 
     // ── Buttons ───────────────────────────────────────────────────────────
@@ -209,23 +209,23 @@ class MainMenuScene extends Phaser.Scene {
     // Settings button
     const setBg = this.add.rectangle(64, 36, 120, 44, 0x111122)
       .setStrokeStyle(1, 0x334455).setInteractive({ useHandCursor: true });
-    const setBtn = this.add.text(64, 36, '⚙ Settings', { fontSize: '15px', fill: '#446688' }).setOrigin(0.5);
+    const setBtn = this.add.text(64, 36, '⚙ Settings', { fontSize: '15px', fill: '#6699cc' }).setOrigin(0.5);
     setBg.on('pointerover', () => { setBg.setFillStyle(0x1a2233); setBtn.setStyle({ fill: '#88aacc' }); });
-    setBg.on('pointerout',  () => { setBg.setFillStyle(0x111122); setBtn.setStyle({ fill: '#446688' }); });
+    setBg.on('pointerout',  () => { setBg.setFillStyle(0x111122); setBtn.setStyle({ fill: '#6699cc' }); });
     setBg.on('pointerdown', () => this.scene.start('SettingsScene', { from: 'MainMenuScene' }));
 
     // How to play
     const helpBg = this.add.rectangle(W - 76, 36, 138, 44, 0x111122)
       .setStrokeStyle(1, 0x334455).setInteractive({ useHandCursor: true });
-    const helpBtn = this.add.text(W - 76, 36, '? How to Play', { fontSize: '15px', fill: '#446688' }).setOrigin(0.5);
+    const helpBtn = this.add.text(W - 76, 36, '? How to Play', { fontSize: '15px', fill: '#6699cc' }).setOrigin(0.5);
     helpBg.on('pointerover', () => { helpBg.setFillStyle(0x1a2233); helpBtn.setStyle({ fill: '#88aacc' }); });
-    helpBg.on('pointerout',  () => { helpBg.setFillStyle(0x111122); helpBtn.setStyle({ fill: '#446688' }); });
+    helpBg.on('pointerout',  () => { helpBg.setFillStyle(0x111122); helpBtn.setStyle({ fill: '#6699cc' }); });
     helpBg.on('pointerdown', () => this.showHelp(W, H));
 
     MetaProgress.load();
 
     this.add.text(W/2, 630, 'WASD / Arrow Keys to move  •  Space to dash  •  Level up = choose an upgrade', {
-      fontSize: '17px', fill: '#445566'
+      fontSize: '17px', fill: '#7799aa'
     }).setOrigin(0.5);
 
     this.tweens.add({
@@ -258,7 +258,7 @@ class MainMenuScene extends Phaser.Scene {
 
     if (rec.wave > 0 || rec.kills > 0) {
       const baseY = py - (lifetimeSouls > 0 ? 64 : 90) + (asc > 0 ? -24 : 0);
-      this.add.text(px, baseY, 'PERSONAL BESTS', { fontSize: '14px', fill: '#444466', fontStyle: 'bold' }).setOrigin(1, 0.5);
+      this.add.text(px, baseY, 'PERSONAL BESTS', { fontSize: '14px', fill: '#8888bb', fontStyle: 'bold' }).setOrigin(1, 0.5);
       const t = rec.time || 0;
       const pb = [
         ['Best Wave', rec.wave],
@@ -267,7 +267,7 @@ class MainMenuScene extends Phaser.Scene {
         ['Longest Run', `${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`],
       ];
       pb.forEach(([label, val], i) => {
-        this.add.text(px, baseY + 20 + i * 20, `${label}:  ${val}`, { fontSize: '15px', fill: '#445566' }).setOrigin(1, 0.5);
+        this.add.text(px, baseY + 20 + i * 20, `${label}:  ${val}`, { fontSize: '15px', fill: '#7799aa' }).setOrigin(1, 0.5);
       });
     }
 

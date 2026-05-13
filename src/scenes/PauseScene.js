@@ -29,7 +29,7 @@ class PauseScene extends Phaser.Scene {
     const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
     const secs = (elapsed % 60).toString().padStart(2, '0');
     this.add.text(panX, panY - panH/2 + 56, `Wave ${gs.waveManager.wave}   ·   Level ${p.level}   ·   ${gs.stats.kills} kills   ·   ${mins}:${secs}`, {
-      fontSize: '15px', fill: '#8899aa'
+      fontSize: '15px', fill: '#aabbcc'
     }).setOrigin(0.5).setDepth(4);
 
     // Thin separator below stats
@@ -148,7 +148,7 @@ class PauseScene extends Phaser.Scene {
     stats.forEach(({ icon, label, val, col }, i) => {
       const sx = i % 2 === 0 ? col1X : col2X;
       const sy = by + 62 + Math.floor(i / 2) * 20;
-      this.add.text(sx, sy, `${icon} ${label}`, { fontSize: '14px', fill: '#667788' }).setDepth(6);
+      this.add.text(sx, sy, `${icon} ${label}`, { fontSize: '14px', fill: '#99aabb' }).setDepth(6);
       this.add.text(sx + halfW, sy, val, { fontSize: '14px', fill: col, fontStyle: 'bold' })
         .setOrigin(1, 0).setDepth(6);
     });
@@ -170,7 +170,7 @@ class PauseScene extends Phaser.Scene {
 
     if (ownedPassives.length === 0) {
       this.add.text(rightX + colW/2, startY + 50, 'No passive items yet.\nPick upgrades to build your loadout.', {
-        fontSize: '14px', fill: '#445566', align: 'center', lineSpacing: 6
+        fontSize: '14px', fill: '#7799aa', align: 'center', lineSpacing: 6
       }).setOrigin(0.5, 0).setDepth(4);
     } else {
       ownedPassives.forEach((pas, i) => {
@@ -211,14 +211,14 @@ class PauseScene extends Phaser.Scene {
     });
 
     const settingsLink = this.add.text(W/2, btnY - 44, '⚙  Settings', {
-      fontSize: '15px', fill: '#446688'
+      fontSize: '15px', fill: '#6699cc'
     }).setOrigin(0.5).setDepth(4).setInteractive({ useHandCursor: true });
     settingsLink.on('pointerover', () => settingsLink.setStyle({ fill: '#88aacc' }));
-    settingsLink.on('pointerout',  () => settingsLink.setStyle({ fill: '#446688' }));
+    settingsLink.on('pointerout',  () => settingsLink.setStyle({ fill: '#6699cc' }));
     settingsLink.on('pointerdown', () => this.showSettings(W, H));
 
     this.add.text(W/2, H - 20, 'Press ESC or P to resume', {
-      fontSize: '14px', fill: '#445566'
+      fontSize: '14px', fill: '#7799aa'
     }).setOrigin(0.5).setDepth(4);
 
     this.input.keyboard.once('keydown-ESC', () => this.resume(data));
@@ -271,7 +271,7 @@ class PauseScene extends Phaser.Scene {
       const fill   = track(this.add.rectangle(barX, cy, barW * s.get(), barH, 0x4488cc).setOrigin(0, 0.5).setDepth(D + 2));
       const trk    = track(this.add.rectangle(W/2, cy, barW, barH, 0x222244).setDepth(D + 1).setInteractive());
       const handle = track(this.add.circle(barX + barW * s.get(), cy, 11, 0xaaccff).setDepth(D + 3).setInteractive({ draggable: true }));
-      const pctLbl = track(this.add.text(W/2, cy + 18, `${Math.round(s.get() * 100)}%`, { fontSize: '13px', fill: '#8899aa' }).setOrigin(0.5).setDepth(D + 1));
+      const pctLbl = track(this.add.text(W/2, cy + 18, `${Math.round(s.get() * 100)}%`, { fontSize: '13px', fill: '#aabbcc' }).setOrigin(0.5).setDepth(D + 1));
       const update = (pct) => { s.set(pct); fill.setSize(barW * pct, barH); handle.setX(barX + barW * pct); pctLbl.setText(`${Math.round(pct * 100)}%`); SettingsScene.saveFromOutside(); };
       trk.on('pointerdown', (ptr) => update(Phaser.Math.Clamp((ptr.x - barX) / barW, 0, 1)));
       this.input.setDraggable(handle);
@@ -279,7 +279,7 @@ class PauseScene extends Phaser.Scene {
     });
 
     // Control mode toggle
-    track(this.add.text(W/2, H/2 + 58, 'MOBILE CONTROLS', { fontSize: '14px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5).setDepth(D + 1));
+    track(this.add.text(W/2, H/2 + 58, 'MOBILE CONTROLS', { fontSize: '14px', fill: '#8899bb', fontStyle: 'bold' }).setOrigin(0.5).setDepth(D + 1));
     let ctrlMode = (() => { try { return JSON.parse(localStorage.getItem('fab_settings') || '{}').controlMode || 'joystick'; } catch(e) { return 'joystick'; } })();
     const tapBtn = track(this.add.rectangle(W/2 - 75, H/2 + 88, 130, 32, ctrlMode === 'tap'      ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setDepth(D + 1).setInteractive({ useHandCursor: true }));
     const joyBtn = track(this.add.rectangle(W/2 + 75, H/2 + 88, 130, 32, ctrlMode === 'joystick' ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setDepth(D + 1).setInteractive({ useHandCursor: true }));

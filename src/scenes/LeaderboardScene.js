@@ -34,7 +34,7 @@ class LeaderboardScene extends Phaser.Scene {
     // Table area
     this._tableContainer = this.add.container(0, 0);
     this._loadingText = this.add.text(W/2, H/2, 'Loading...', {
-      fontSize: '18px', fill: '#446688'
+      fontSize: '18px', fill: '#6699cc'
     }).setOrigin(0.5);
 
     // Back button
@@ -83,7 +83,7 @@ class LeaderboardScene extends Phaser.Scene {
 
     if (rows.length === 0) {
       const t = this.add.text(W/2, H/2, 'No scores yet — be the first!', {
-        fontSize: '18px', fill: '#445566'
+        fontSize: '18px', fill: '#7799aa'
       }).setOrigin(0.5);
       this._tableContainer.add(t);
       return;
@@ -92,7 +92,7 @@ class LeaderboardScene extends Phaser.Scene {
     // Header
     const headerY = 148;
     [['#', W/2 - 340], ['Name', W/2 - 270], ['Character', W/2 - 60], [labels[stat], W/2 + 200]].forEach(([label, x]) => {
-      const t = this.add.text(x, headerY, label, { fontSize: '14px', fill: '#445566', fontStyle: 'bold' }).setOrigin(0, 0.5);
+      const t = this.add.text(x, headerY, label, { fontSize: '14px', fill: '#7799aa', fontStyle: 'bold' }).setOrigin(0, 0.5);
       this._tableContainer.add(t);
     });
     const line = this.add.rectangle(W/2, headerY + 16, W - 120, 1, 0x223344);
@@ -103,7 +103,7 @@ class LeaderboardScene extends Phaser.Scene {
       const rowBg = this.add.rectangle(W/2, y, W - 120, 40, i % 2 === 0 ? 0x0a0a18 : 0x0c0c1e);
       this._tableContainer.add(rowBg);
 
-      const rankColor = i === 0 ? '#FFD700' : i === 1 ? '#aaaaaa' : i === 2 ? '#cc8844' : '#445566';
+      const rankColor = i === 0 ? '#FFD700' : i === 1 ? '#aaaaaa' : i === 2 ? '#cc8844' : '#7799aa';
       const rank = this.add.text(W/2 - 340, y, `#${i + 1}`, { fontSize: '16px', fill: rankColor, fontStyle: 'bold' }).setOrigin(0, 0.5);
 
       const name = this.add.text(W/2 - 270, y, row.name, { fontSize: '17px', fill: '#ccdde8' }).setOrigin(0, 0.5);

@@ -159,7 +159,7 @@ class GameScene extends Phaser.Scene {
     minimapBg.lineStyle(1, 0x334466, 1);
     minimapBg.strokeRect(this.mmX, this.mmY, mmSize, mmSize);
     this.add.text(this.mmX + mmSize / 2, this.mmY - 10, 'MAP', {
-      fontSize: '9px', fill: '#334455'
+      fontSize: '9px', fill: '#99aabb'
     }).setOrigin(0.5, 1).setScrollFactor(0).setDepth(D - 1);
     this.minimapDots = this.add.graphics().setScrollFactor(0).setDepth(D);
 
@@ -578,7 +578,7 @@ class GameScene extends Phaser.Scene {
 
       // Damage label
       const dmgLabel = this.add.text(x + boxW / 2, y + boxH - 9, `${wDef.damage}dmg`, {
-        fontSize: '9px', fill: ready ? '#aaccff' : '#445566'
+        fontSize: '9px', fill: ready ? '#aaccff' : '#7799aa'
       }).setOrigin(0.5).setScrollFactor(0).setDepth(501);
       this.weaponTexts.push(dmgLabel);
 

@@ -45,7 +45,7 @@ class SettingsScene extends Phaser.Scene {
 
       // Percentage label
       const pctLabel = this.add.text(W/2, cy + 22, `${Math.round(s.get() * 100)}%`, {
-        fontSize: '15px', fill: '#8899aa'
+        fontSize: '15px', fill: '#aabbcc'
       }).setOrigin(0.5);
 
       // Click on track to jump
@@ -71,7 +71,7 @@ class SettingsScene extends Phaser.Scene {
     });
 
     // Mobile controls toggle
-    this.add.text(W/2, 306, 'MOBILE CONTROLS', { fontSize: '16px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5);
+    this.add.text(W/2, 306, 'MOBILE CONTROLS', { fontSize: '16px', fill: '#8899bb', fontStyle: 'bold' }).setOrigin(0.5);
     let ctrlMode = (() => { try { return JSON.parse(localStorage.getItem('fab_settings') || '{}').controlMode || 'joystick'; } catch(e) { return 'joystick'; } })();
     const tapBtn = this.add.rectangle(W/2 - 75, 334, 130, 32, ctrlMode === 'tap'      ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setInteractive({ useHandCursor: true });
     const joyBtn = this.add.rectangle(W/2 + 75, 334, 130, 32, ctrlMode === 'joystick' ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setInteractive({ useHandCursor: true });
@@ -89,15 +89,15 @@ class SettingsScene extends Phaser.Scene {
     // ── Cloud save ────────────────────────────────────────────────────────
     MetaProgress.load();
     const code = MetaProgress.getCode();
-    this.add.text(W/2, 390, 'CLOUD SAVE CODE', { fontSize: '14px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5);
+    this.add.text(W/2, 390, 'CLOUD SAVE CODE', { fontSize: '14px', fill: '#8899bb', fontStyle: 'bold' }).setOrigin(0.5);
     this.add.rectangle(W/2, 416, 320, 32, 0x111122).setStrokeStyle(1, 0x4488cc);
     this.add.text(W/2, 416, code, { fontSize: '18px', fill: '#FFD700', fontStyle: 'bold' }).setOrigin(0.5);
-    this.add.text(W/2, 442, 'Enter this code on another device to sync your progress', { fontSize: '13px', fill: '#667788' }).setOrigin(0.5);
+    this.add.text(W/2, 442, 'Enter this code on another device to sync your progress', { fontSize: '13px', fill: '#99aabb' }).setOrigin(0.5);
 
-    const importBtn = this.add.text(W/2, 464, '↓  Import from code', { fontSize: '14px', fill: '#446688' })
+    const importBtn = this.add.text(W/2, 464, '↓  Import from code', { fontSize: '14px', fill: '#6699cc' })
       .setOrigin(0.5).setInteractive({ useHandCursor: true });
     importBtn.on('pointerover', () => importBtn.setStyle({ fill: '#88aacc' }));
-    importBtn.on('pointerout',  () => importBtn.setStyle({ fill: '#446688' }));
+    importBtn.on('pointerout',  () => importBtn.setStyle({ fill: '#6699cc' }));
     importBtn.on('pointerdown', () => this._showImport(W, H));
 
     // ── Reset progress ────────────────────────────────────────────────────

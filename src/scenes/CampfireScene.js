@@ -66,7 +66,7 @@ class CampfireScene extends Phaser.Scene {
         if (isNew) {
           this.add.text(448, y, '★ BEST', { fontSize: '11px', fill: '#FFD700' }).setOrigin(0, 0.5);
         } else if (best !== null && best > 0) {
-          this.add.text(448, y, `pb: ${key === 'wave' || key === 'level' || key === 'kills' ? best : ''}`, { fontSize: '10px', fill: '#444455' }).setOrigin(0, 0.5);
+          this.add.text(448, y, `pb: ${key === 'wave' || key === 'level' || key === 'kills' ? best : ''}`, { fontSize: '10px', fill: '#aabbcc' }).setOrigin(0, 0.5);
         }
       });
 
@@ -255,7 +255,7 @@ class CampfireScene extends Phaser.Scene {
       }
 
       // Name + icon
-      const nameColor = isMaxed ? '#44cc44' : tier > 0 ? '#ddeeff' : '#778899';
+      const nameColor = isMaxed ? '#44cc44' : tier > 0 ? '#ddeeff' : '#aabbcc';
       add(this.add.text(cx - colW/2 + 10, cy - 32, `${upg.icon}  ${upg.name}`, {
         fontSize: '17px', fill: nameColor, fontStyle: 'bold'
       }).setOrigin(0, 0.5));
@@ -286,7 +286,7 @@ class CampfireScene extends Phaser.Scene {
         const nextDesc = MetaProgress.nextTierDesc(upg.id);
         const nextCost = MetaProgress.nextTierCost(upg.id);
         add(this.add.text(cx - colW/2 + 10, cy + (prevDesc ? 12 : 2), `→ ${nextDesc}`, {
-          fontSize: '14px', fill: canBuy ? '#aaccff' : '#445566'
+          fontSize: '14px', fill: canBuy ? '#aaccff' : '#7799aa'
         }).setOrigin(0, 0.5));
 
         // Buy button
@@ -295,7 +295,7 @@ class CampfireScene extends Phaser.Scene {
         const buyBtn = add(this.add.rectangle(cx + colW/2 - 48, cy + 30, 90, 30, btnColor)
           .setStrokeStyle(1, btnBorder));
         add(this.add.text(cx + colW/2 - 48, cy + 30, `${nextCost} 💀`, {
-          fontSize: '14px', fill: canBuy ? '#88ccff' : '#334455'
+          fontSize: '14px', fill: canBuy ? '#88ccff' : '#99aabb'
         }).setOrigin(0.5));
 
         if (canBuy) {
@@ -336,7 +336,7 @@ class CampfireScene extends Phaser.Scene {
       ).setOrigin(0.5));
       add(this.add.text(ascCx, ascY + 10,
         'Resets all tiers · Grants permanent bonus · Reopens the tree',
-        { fontSize: '10px', fill: allMax ? '#664466' : '#333344' }
+        { fontSize: '10px', fill: allMax ? '#664466' : '#99aabb' }
       ).setOrigin(0.5));
 
       if (canAsc) {
@@ -357,7 +357,7 @@ class CampfireScene extends Phaser.Scene {
       ).length;
       add(this.add.text(ascCx, ascY,
         `⬆  ASCEND  —  max all ${remaining} remaining upgrade${remaining !== 1 ? 's' : ''} to unlock`,
-        { fontSize: '12px', fill: '#333344' }
+        { fontSize: '12px', fill: '#99aabb' }
       ).setOrigin(0.5));
     }
   }
