@@ -557,7 +557,8 @@ class GameScene extends Phaser.Scene {
       // Abbreviated weapon name (2 lines)
       const names = {
         magic_orb: ['ORB', ''], sword_slash: ['SLASH', ''], arrow: ['ARROW', ''],
-        boomerang: ['BOOM-', 'RANG'], fire_nova: ['NOVA', ''], daggers: ['DAGGER', ''],
+        boomerang: ['BOOM-', 'RANG'], fire_nova: ['NOVA', ''],
+        daggers: wDef.special === 'spread3' ? ['DAG-', 'GER×3'] : ['DAGGER', ''],
         chaos_nova: ['CHAOS', 'NOVA'], storm_bow: ['STORM', 'BOW'],
         holy_blade: ['HOLY', 'BLADE'], soul_catcher: ['SOUL', 'CATCH'],
       };
