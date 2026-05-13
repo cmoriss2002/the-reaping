@@ -15,7 +15,19 @@ class BootScene extends Phaser.Scene {
   create() {
     TextureFactory.generate(this);
     SoundManager.init();
-    SettingsScene.loadVolumes(); // restore saved music/sfx volumes
+    SettingsScene.loadVolumes();
+    this._migrateSettings();
     this.scene.start('MainMenuScene');
+  }
+
+  _migrateSettings() {
+    try {
+      const s = JSON.parse(localStorage.getItem('fab_settings') || '{}');
+      if (!s.settingsVersion || s.settingsVersion < 2) {
+        s.controlMode = 'joystick';
+        s.settingsVersion = 2;
+        localStorage.setItem('fab_settings', JSON.stringify(s));
+      }
+    } catch(e) {}
   }
 }
