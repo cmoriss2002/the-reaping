@@ -103,17 +103,17 @@ class SettingsScene extends Phaser.Scene {
     // ── Reset progress ────────────────────────────────────────────────────
     const resetG = this.add.graphics();
     resetG.lineStyle(1, 0x661111, 0.6);
-    resetG.strokeRect(W/2 - 180, 498, 360, 66);
+    resetG.strokeRect(W/2 - 180, 518, 360, 66);
     resetG.fillStyle(0x1a0808, 0.6);
-    resetG.fillRect(W/2 - 180, 498, 360, 66);
+    resetG.fillRect(W/2 - 180, 518, 360, 66);
 
-    this.add.text(W/2, 506, '⚠  DANGER ZONE', {
+    this.add.text(W/2, 526, '⚠  DANGER ZONE', {
       fontSize: '11px', fill: '#883333', fontStyle: 'bold', letterSpacing: 2
     }).setOrigin(0.5);
 
-    const resetBtn = this.add.rectangle(W/2, 532, 280, 32, 0x3a0c0c)
+    const resetBtn = this.add.rectangle(W/2, 552, 280, 32, 0x3a0c0c)
       .setStrokeStyle(1, 0xaa2222).setInteractive({ useHandCursor: true });
-    const resetTxt = this.add.text(W/2, 532, 'RESET ALL PROGRESS', {
+    const resetTxt = this.add.text(W/2, 552, 'RESET ALL PROGRESS', {
       fontSize: '15px', fill: '#cc4444', fontStyle: 'bold'
     }).setOrigin(0.5);
 
@@ -122,9 +122,9 @@ class SettingsScene extends Phaser.Scene {
     resetBtn.on('pointerdown', () => this.showResetConfirm(W, H));
 
     // Back
-    const back = this.add.rectangle(W/2, 610, 200, 36, 0x222233)
+    const back = this.add.rectangle(W/2, 630, 200, 36, 0x222233)
       .setStrokeStyle(1, 0x446688).setInteractive({ useHandCursor: true });
-    this.add.text(W/2, 610, '← BACK', { fontSize: '18px', fill: '#aabbcc' }).setOrigin(0.5);
+    this.add.text(W/2, 630, '← BACK', { fontSize: '18px', fill: '#aabbcc' }).setOrigin(0.5);
     back.on('pointerover', () => back.setFillStyle(0x334455));
     back.on('pointerout',  () => back.setFillStyle(0x222233));
     back.on('pointerdown', () => this.scene.start(from));
