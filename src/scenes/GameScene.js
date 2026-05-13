@@ -113,11 +113,11 @@ class GameScene extends Phaser.Scene {
     this.hudXpNums = this.add.text(152, 38, '', { fontSize: '13px', fill: '#88ddbb' }).setScrollFactor(0).setDepth(D);
 
     // Dash label + cooldown bar
-    this.add.text(20, 59, 'DASH', { fontSize: '10px', fill: '#4466aa' }).setScrollFactor(0).setDepth(D);
+    this.add.text(20, 59, 'DASH', { fontSize: '13px', fill: '#4466aa' }).setScrollFactor(0).setDepth(D);
 
     // Top-centre / right
     this.hudWave     = this.add.text(W/2, 16, '', { fontSize: '20px', fill: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(D);
-    this.hudEnemies  = this.add.text(W/2, 40, '', { fontSize: '12px', fill: '#556677' }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(D);
+    this.hudEnemies  = this.add.text(W/2, 40, '', { fontSize: '14px', fill: '#556677' }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(D);
     this.hudKills  = this.add.text(W-20, 16, '', { fontSize: '16px', fill: '#aaaaaa' }).setOrigin(1, 0).setScrollFactor(0).setDepth(D);
     this.hudTime   = this.add.text(W-20, 38, '', { fontSize: '14px', fill: '#666688' }).setOrigin(1, 0).setScrollFactor(0).setDepth(D);
     this.hudSouls  = this.add.text(W-20, 58, '', { fontSize: '14px', fill: '#cc9922' }).setOrigin(1, 0).setScrollFactor(0).setDepth(D);
@@ -159,7 +159,7 @@ class GameScene extends Phaser.Scene {
     minimapBg.lineStyle(1, 0x334466, 1);
     minimapBg.strokeRect(this.mmX, this.mmY, mmSize, mmSize);
     this.add.text(this.mmX + mmSize / 2, this.mmY - 10, 'MAP', {
-      fontSize: '9px', fill: '#99aabb'
+      fontSize: '13px', fill: '#99aabb'
     }).setOrigin(0.5, 1).setScrollFactor(0).setDepth(D - 1);
     this.minimapDots = this.add.graphics().setScrollFactor(0).setDepth(D);
 
@@ -464,14 +464,14 @@ class GameScene extends Phaser.Scene {
 
       // Item name (abbreviated)
       const nameLbl = this.add.text(x + boxW/2, y + 8, p.icon, {
-        fontSize: '11px', fill: '#ffffff', fontStyle: 'bold'
+        fontSize: '13px', fill: '#ffffff', fontStyle: 'bold'
       }).setOrigin(0.5).setScrollFactor(0).setDepth(501);
       this.passiveTexts.push(nameLbl);
 
       // Effect label — what it's actually doing
       const effect = effectLabel[p.id] ? effectLabel[p.id]() : '';
       const effLbl = this.add.text(x + boxW/2, y + 22, effect, {
-        fontSize: '10px', fill: '#ffffff'
+        fontSize: '13px', fill: '#ffffff'
       }).setOrigin(0.5).setScrollFactor(0).setDepth(501);
       this.passiveTexts.push(effLbl);
 
@@ -565,20 +565,20 @@ class GameScene extends Phaser.Scene {
       const nameColor = ready ? '#ffffff' : '#888899';
 
       const t1 = this.add.text(x + boxW / 2, y + (line2 ? 11 : 16), line1, {
-        fontSize: '10px', fill: nameColor, fontStyle: 'bold'
+        fontSize: '13px', fill: nameColor, fontStyle: 'bold'
       }).setOrigin(0.5).setScrollFactor(0).setDepth(501);
       this.weaponTexts.push(t1);
 
       if (line2) {
         const t2 = this.add.text(x + boxW / 2, y + 23, line2, {
-          fontSize: '10px', fill: nameColor, fontStyle: 'bold'
+          fontSize: '13px', fill: nameColor, fontStyle: 'bold'
         }).setOrigin(0.5).setScrollFactor(0).setDepth(501);
         this.weaponTexts.push(t2);
       }
 
       // Damage label
       const dmgLabel = this.add.text(x + boxW / 2, y + boxH - 9, `${wDef.damage}dmg`, {
-        fontSize: '9px', fill: ready ? '#aaccff' : '#7799aa'
+        fontSize: '13px', fill: ready ? '#aaccff' : '#7799aa'
       }).setOrigin(0.5).setScrollFactor(0).setDepth(501);
       this.weaponTexts.push(dmgLabel);
 

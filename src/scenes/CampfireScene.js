@@ -64,14 +64,14 @@ class CampfireScene extends Phaser.Scene {
         this.add.text(160, y, label, { fontSize: '16px', fill: '#666688' }).setOrigin(0, 0.5);
         this.add.text(440, y, String(value), { fontSize: '17px', fill: color, fontStyle: isNew ? 'bold' : 'normal' }).setOrigin(1, 0.5);
         if (isNew) {
-          this.add.text(448, y, '★ BEST', { fontSize: '11px', fill: '#FFD700' }).setOrigin(0, 0.5);
+          this.add.text(448, y, '★ BEST', { fontSize: '13px', fill: '#FFD700' }).setOrigin(0, 0.5);
         } else if (best !== null && best > 0) {
-          this.add.text(448, y, `pb: ${key === 'wave' || key === 'level' || key === 'kills' ? best : ''}`, { fontSize: '10px', fill: '#aabbcc' }).setOrigin(0, 0.5);
+          this.add.text(448, y, `pb: ${key === 'wave' || key === 'level' || key === 'kills' ? best : ''}`, { fontSize: '13px', fill: '#aabbcc' }).setOrigin(0, 0.5);
         }
       });
 
       const banner = this.add.rectangle(300, 600, 320, 60, 0x1a1a10).setStrokeStyle(2, 0xcc9922);
-      this.add.text(300, 584, 'SOULS EARNED THIS RUN', { fontSize: '12px', fill: '#886633' }).setOrigin(0.5);
+      this.add.text(300, 584, 'SOULS EARNED THIS RUN', { fontSize: '14px', fill: '#886633' }).setOrigin(0.5);
       const earnedText = this.add.text(300, 610, `+${earned} souls`, {
         fontSize: '26px', fill: '#FFD700', fontStyle: 'bold',
         stroke: '#442200', strokeThickness: 3
@@ -230,7 +230,7 @@ class CampfireScene extends Phaser.Scene {
         .setStrokeStyle(1, 0x8844cc));
       add(this.add.text(x + (colW * 2 + pad) / 2, y - 18,
         `✦ Ascension Lv ${asc}  ·  +${asc * 3}% dmg  ·  +${asc * 3}% HP  ·  +${asc * 2} speed`,
-        { fontSize: '11px', fill: '#cc88ff' }
+        { fontSize: '13px', fill: '#cc88ff' }
       ).setOrigin(0.5));
     }
 
@@ -280,7 +280,7 @@ class CampfireScene extends Phaser.Scene {
         const prevDesc = tier > 0 ? upg.tiers[tier - 1].desc : null;
         if (prevDesc) {
           add(this.add.text(cx - colW/2 + 10, cy - 8, prevDesc, {
-            fontSize: '12px', fill: '#445544'
+            fontSize: '14px', fill: '#445544'
           }).setOrigin(0, 0.5));
         }
         const nextDesc = MetaProgress.nextTierDesc(upg.id);
@@ -336,7 +336,7 @@ class CampfireScene extends Phaser.Scene {
       ).setOrigin(0.5));
       add(this.add.text(ascCx, ascY + 10,
         'Resets all tiers · Grants permanent bonus · Reopens the tree',
-        { fontSize: '10px', fill: allMax ? '#664466' : '#99aabb' }
+        { fontSize: '13px', fill: allMax ? '#664466' : '#99aabb' }
       ).setOrigin(0.5));
 
       if (canAsc) {
@@ -357,7 +357,7 @@ class CampfireScene extends Phaser.Scene {
       ).length;
       add(this.add.text(ascCx, ascY,
         `⬆  ASCEND  —  max all ${remaining} remaining upgrade${remaining !== 1 ? 's' : ''} to unlock`,
-        { fontSize: '12px', fill: '#99aabb' }
+        { fontSize: '14px', fill: '#99aabb' }
       ).setOrigin(0.5));
     }
   }

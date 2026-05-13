@@ -141,7 +141,7 @@ class CampOverlayScene extends Phaser.Scene {
             const rBtn = add(this.add.rectangle(cx - colW/2 + 8 + (colW - 16)/2, cy + 26, colW - 16, 26,
               canRestore ? 0x112244 : 0x0e0e14).setStrokeStyle(1, canRestore ? 0x4466cc : 0x222233));
             add(this.add.text(cx - colW/2 + 8 + (colW - 16)/2, cy + 26, restoreLabel, {
-              fontSize: '12px', fill: canRestore ? '#88aaff' : '#334455'
+              fontSize: '14px', fill: canRestore ? '#88aaff' : '#334455'
             }).setOrigin(0.5));
             if (canRestore) {
               rBtn.setInteractive({ useHandCursor: true });

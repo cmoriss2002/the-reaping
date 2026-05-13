@@ -69,7 +69,7 @@ class CharacterSelectScene extends Phaser.Scene {
 
       Object.entries(char.statBars).forEach(([label, pct], si) => {
         const by = top + 268 + si * 30;
-        this.add.text(cx + BAR_LEFT - 10, by, label, { fontSize: '12px', fill: '#7777aa' }).setOrigin(1, 0.5);
+        this.add.text(cx + BAR_LEFT - 10, by, label, { fontSize: '14px', fill: '#7777aa' }).setOrigin(1, 0.5);
         this.add.rectangle(cx + BAR_LEFT + BAR_W/2, by, BAR_W, 8, 0x222244).setOrigin(0.5, 0.5);
         this.add.rectangle(cx + BAR_LEFT, by, Math.min(pct, 1) * BAR_W, 6, char.color).setOrigin(0, 0.5);
       });

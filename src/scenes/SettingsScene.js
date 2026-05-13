@@ -108,7 +108,7 @@ class SettingsScene extends Phaser.Scene {
     resetG.fillRect(W/2 - 180, 518, 360, 66);
 
     this.add.text(W/2, 526, '⚠  DANGER ZONE', {
-      fontSize: '11px', fill: '#883333', fontStyle: 'bold', letterSpacing: 2
+      fontSize: '13px', fill: '#883333', fontStyle: 'bold', letterSpacing: 2
     }).setOrigin(0.5);
 
     const resetBtn = this.add.rectangle(W/2, 552, 280, 32, 0x3a0c0c)

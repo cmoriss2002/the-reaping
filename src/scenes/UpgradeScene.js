@@ -46,7 +46,7 @@ class UpgradeScene extends Phaser.Scene {
       // Tier indicator for passives
       if (isPassive(upgrade) && upgrade._tier > 0) {
         this.add.text(cx, cy - cardH/2 + 30, `TIER ${upgrade._tier} → ${upgrade._tier + 1}`, {
-          fontSize: '10px', fill: '#ffee88'
+          fontSize: '13px', fill: '#ffee88'
         }).setOrigin(0.5);
       }
 
