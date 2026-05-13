@@ -28,7 +28,7 @@ class SettingsScene extends Phaser.Scene {
     ];
 
     sliders.forEach((s, i) => {
-      const cy  = 180 + i * 74;
+      const cy  = 165 + i * 70;
       const barX = W/2 - 180, barW = 360, barH = 10;
 
       this.add.text(W/2, cy - 24, s.label, { fontSize: '20px', fill: '#ccccdd' }).setOrigin(0.5);
@@ -71,12 +71,12 @@ class SettingsScene extends Phaser.Scene {
     });
 
     // Mobile controls toggle
-    this.add.text(W/2, 318, 'MOBILE CONTROLS', { fontSize: '16px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5);
+    this.add.text(W/2, 306, 'MOBILE CONTROLS', { fontSize: '16px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5);
     let ctrlMode = (() => { try { return JSON.parse(localStorage.getItem('fab_settings') || '{}').controlMode || 'tap'; } catch(e) { return 'tap'; } })();
-    const tapBtn = this.add.rectangle(W/2 - 75, 348, 130, 32, ctrlMode === 'tap'      ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setInteractive({ useHandCursor: true });
-    const joyBtn = this.add.rectangle(W/2 + 75, 348, 130, 32, ctrlMode === 'joystick' ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setInteractive({ useHandCursor: true });
-    const tapTxt = this.add.text(W/2 - 75, 348, 'Tap to Move', { fontSize: '13px', fill: '#aaccee' }).setOrigin(0.5);
-    const joyTxt = this.add.text(W/2 + 75, 348, 'Joystick',    { fontSize: '13px', fill: '#aaccee' }).setOrigin(0.5);
+    const tapBtn = this.add.rectangle(W/2 - 75, 334, 130, 32, ctrlMode === 'tap'      ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setInteractive({ useHandCursor: true });
+    const joyBtn = this.add.rectangle(W/2 + 75, 334, 130, 32, ctrlMode === 'joystick' ? 0x1a3a5a : 0x111122).setStrokeStyle(1, 0x4488cc).setInteractive({ useHandCursor: true });
+    const tapTxt = this.add.text(W/2 - 75, 334, 'Tap to Move', { fontSize: '13px', fill: '#aaccee' }).setOrigin(0.5);
+    const joyTxt = this.add.text(W/2 + 75, 334, 'Joystick',    { fontSize: '13px', fill: '#aaccee' }).setOrigin(0.5);
     const setCtrl = (mode) => {
       ctrlMode = mode;
       tapBtn.setFillStyle(mode === 'tap'      ? 0x1a3a5a : 0x111122);
@@ -86,29 +86,15 @@ class SettingsScene extends Phaser.Scene {
     tapBtn.on('pointerdown', () => setCtrl('tap'));
     joyBtn.on('pointerdown', () => setCtrl('joystick'));
 
-    // Controls display
-    this.add.text(W/2, 382, 'CONTROLS', { fontSize: '20px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5);
-    [
-      ['WASD / Arrow Keys', 'Move'],
-      ['Space',             'Dash (1.5s cd, i-frames)'],
-      ['Auto',              'Attack nearest enemy'],
-      ['C',                 'Open Camp (upgrades)'],
-      ['P / ESC',           'Pause'],
-    ].forEach(([key, desc], i) => {
-      const y = 412 + i * 30;
-      this.add.text(W/2 - 160, y, key,  { fontSize: '18px', fill: '#4488cc' }).setOrigin(1, 0.5);
-      this.add.text(W/2 - 140, y, desc, { fontSize: '18px', fill: '#889aaa' }).setOrigin(0, 0.5);
-    });
-
     // ── Cloud save ────────────────────────────────────────────────────────
     MetaProgress.load();
     const code = MetaProgress.getCode();
-    this.add.text(W/2, 570, 'CLOUD SAVE CODE', { fontSize: '14px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5);
-    this.add.rectangle(W/2, 596, 320, 32, 0x111122).setStrokeStyle(1, 0x4488cc);
-    this.add.text(W/2, 596, code, { fontSize: '18px', fill: '#FFD700', fontStyle: 'bold' }).setOrigin(0.5);
-    this.add.text(W/2, 616, 'Enter this code on another device to sync your progress', { fontSize: '11px', fill: '#445566' }).setOrigin(0.5);
+    this.add.text(W/2, 390, 'CLOUD SAVE CODE', { fontSize: '14px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5);
+    this.add.rectangle(W/2, 416, 320, 32, 0x111122).setStrokeStyle(1, 0x4488cc);
+    this.add.text(W/2, 416, code, { fontSize: '18px', fill: '#FFD700', fontStyle: 'bold' }).setOrigin(0.5);
+    this.add.text(W/2, 436, 'Enter this code on another device to sync your progress', { fontSize: '11px', fill: '#445566' }).setOrigin(0.5);
 
-    const importBtn = this.add.text(W/2, 638, '↓  Import from code', { fontSize: '14px', fill: '#446688' })
+    const importBtn = this.add.text(W/2, 458, '↓  Import from code', { fontSize: '14px', fill: '#446688' })
       .setOrigin(0.5).setInteractive({ useHandCursor: true });
     importBtn.on('pointerover', () => importBtn.setStyle({ fill: '#88aacc' }));
     importBtn.on('pointerout',  () => importBtn.setStyle({ fill: '#446688' }));
@@ -117,17 +103,17 @@ class SettingsScene extends Phaser.Scene {
     // ── Reset progress ────────────────────────────────────────────────────
     const resetG = this.add.graphics();
     resetG.lineStyle(1, 0x661111, 0.6);
-    resetG.strokeRect(W/2 - 180, H - 148, 360, 74);
+    resetG.strokeRect(W/2 - 180, 498, 360, 66);
     resetG.fillStyle(0x1a0808, 0.6);
-    resetG.fillRect(W/2 - 180, H - 148, 360, 74);
+    resetG.fillRect(W/2 - 180, 498, 360, 66);
 
-    this.add.text(W/2, H - 140, '⚠  DANGER ZONE', {
+    this.add.text(W/2, 506, '⚠  DANGER ZONE', {
       fontSize: '11px', fill: '#883333', fontStyle: 'bold', letterSpacing: 2
     }).setOrigin(0.5);
 
-    const resetBtn = this.add.rectangle(W/2, H - 116, 280, 32, 0x3a0c0c)
+    const resetBtn = this.add.rectangle(W/2, 532, 280, 32, 0x3a0c0c)
       .setStrokeStyle(1, 0xaa2222).setInteractive({ useHandCursor: true });
-    const resetTxt = this.add.text(W/2, H - 116, 'RESET ALL PROGRESS', {
+    const resetTxt = this.add.text(W/2, 532, 'RESET ALL PROGRESS', {
       fontSize: '15px', fill: '#cc4444', fontStyle: 'bold'
     }).setOrigin(0.5);
 
@@ -136,9 +122,9 @@ class SettingsScene extends Phaser.Scene {
     resetBtn.on('pointerdown', () => this.showResetConfirm(W, H));
 
     // Back
-    const back = this.add.rectangle(W/2, H - 30, 200, 36, 0x222233)
+    const back = this.add.rectangle(W/2, 610, 200, 36, 0x222233)
       .setStrokeStyle(1, 0x446688).setInteractive({ useHandCursor: true });
-    this.add.text(W/2, H - 30, '← BACK', { fontSize: '18px', fill: '#aabbcc' }).setOrigin(0.5);
+    this.add.text(W/2, 610, '← BACK', { fontSize: '18px', fill: '#aabbcc' }).setOrigin(0.5);
     back.on('pointerover', () => back.setFillStyle(0x334455));
     back.on('pointerout',  () => back.setFillStyle(0x222233));
     back.on('pointerdown', () => this.scene.start(from));
