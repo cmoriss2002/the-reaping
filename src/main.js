@@ -26,7 +26,17 @@ document.addEventListener('click', function unlock() {
 }, { once: true });
 
 // Resize canvas when device orientation changes
-window.addEventListener('resize', () => game.scale.refresh());
+// Suppressed while an HTML input overlay is open (keyboard resize would shift canvas)
+window.addEventListener('resize', () => { if (!window._inputOverlayOpen) game.scale.refresh(); });
 window.addEventListener('orientationchange', () => {
-  setTimeout(() => game.scale.refresh(), 200);
+  setTimeout(() => { if (!window._inputOverlayOpen) game.scale.refresh(); }, 200);
 });
+
+// Helper to apply mobile-friendly attributes to an input element
+window.mobileInput = (input) => {
+  input.setAttribute('autocomplete', 'off');
+  input.setAttribute('autocorrect', 'off');
+  input.setAttribute('autocapitalize', 'off');
+  input.setAttribute('spellcheck', 'false');
+  input.setAttribute('inputmode', 'text');
+};

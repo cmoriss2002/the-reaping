@@ -365,6 +365,7 @@ class CampfireScene extends Phaser.Scene {
   _showScoreSubmit(data) {
     const storedName = localStorage.getItem('reaping_player_name') || '';
 
+    window._inputOverlayOpen = true;
     const overlay = document.createElement('div');
     overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.78);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:monospace';
 
@@ -385,6 +386,7 @@ class CampfireScene extends Phaser.Scene {
     input.maxLength = 20;
     input.value = storedName;
     input.style.cssText = 'width:200px;padding:10px;background:#1a1a2e;border:1px solid #4488cc;color:#fff;font-size:15px;text-align:center;border-radius:3px;outline:none;display:block;margin:0 auto 18px;box-sizing:border-box';
+    window.mobileInput(input);
 
     const btnRow = document.createElement('div');
     btnRow.style.cssText = 'display:flex;gap:10px;justify-content:center';
@@ -407,7 +409,7 @@ class CampfireScene extends Phaser.Scene {
     document.body.appendChild(overlay);
     setTimeout(() => input.focus(), 100);
 
-    const dismiss = () => overlay.remove();
+    const dismiss = () => { window._inputOverlayOpen = false; overlay.remove(); };
 
     const submit = async () => {
       const name = input.value.trim();

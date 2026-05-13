@@ -184,6 +184,7 @@ class SettingsScene extends Phaser.Scene {
   }
 
   _showImport(W, H) {
+    window._inputOverlayOpen = true;
     const overlay = document.createElement('div');
     overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.78);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:monospace';
 
@@ -203,6 +204,7 @@ class SettingsScene extends Phaser.Scene {
     input.placeholder = 'e.g. DARK-7842';
     input.maxLength = 12;
     input.style.cssText = 'width:200px;padding:10px;background:#1a1a2e;border:1px solid #4488cc;color:#fff;font-size:16px;text-align:center;border-radius:3px;outline:none;display:block;margin:0 auto 8px;box-sizing:border-box;text-transform:uppercase;letter-spacing:2px';
+    window.mobileInput(input);
 
     const status = document.createElement('p');
     status.style.cssText = 'color:#cc4444;font-size:12px;margin:0 0 14px;min-height:16px';
@@ -229,7 +231,7 @@ class SettingsScene extends Phaser.Scene {
     document.body.appendChild(overlay);
     setTimeout(() => input.focus(), 100);
 
-    const dismiss = () => overlay.remove();
+    const dismiss = () => { window._inputOverlayOpen = false; overlay.remove(); };
     cancelBtn.addEventListener('click', dismiss);
 
     const doImport = async () => {
