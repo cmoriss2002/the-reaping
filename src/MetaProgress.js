@@ -119,9 +119,46 @@ var MetaProgress = {
     };
   },
 
+  // ── Save code ────────────────────────────────────────────────────────────────
+  getCode() {
+    let code = localStorage.getItem('reaping_save_code');
+    if (!code) {
+      const words = ['DARK','GRIM','SOUL','BONE','ASH','VOID','CRYPT','DUSK','DOOM','FELL'];
+      const w = words[Math.floor(Math.random() * words.length)];
+      const n = String(Math.floor(Math.random() * 9000) + 1000);
+      code = `${w}-${n}`;
+      localStorage.setItem('reaping_save_code', code);
+    }
+    return code;
+  },
+
   save() {
     try { localStorage.setItem('fantasyAutoBattler_v1', JSON.stringify(this._data)); }
     catch (e) {}
+    this._cloudSync();
+  },
+
+  _cloudSync() {
+    // Debounce — only sync once per 5s at most
+    if (this._syncTimer) return;
+    this._syncTimer = setTimeout(() => {
+      this._syncTimer = null;
+      const code = this.getCode();
+      fetch('/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, save_data: this._data })
+      }).catch(() => {});
+    }, 5000);
+  },
+
+  async importFromCode(code) {
+    const res = await fetch(`/api/save?code=${encodeURIComponent(code.toUpperCase())}`);
+    if (!res.ok) throw new Error('Code not found');
+    const data = await res.json();
+    this._data = this._migrate(data);
+    localStorage.setItem('reaping_save_code', code.toUpperCase());
+    this.save();
   },
 
   // ── Soul economy ────────────────────────────────────────────────────────────

@@ -100,6 +100,20 @@ class SettingsScene extends Phaser.Scene {
       this.add.text(W/2 - 140, y, desc, { fontSize: '18px', fill: '#889aaa' }).setOrigin(0, 0.5);
     });
 
+    // ── Cloud save ────────────────────────────────────────────────────────
+    MetaProgress.load();
+    const code = MetaProgress.getCode();
+    this.add.text(W/2, 570, 'CLOUD SAVE CODE', { fontSize: '14px', fill: '#556688', fontStyle: 'bold' }).setOrigin(0.5);
+    this.add.rectangle(W/2, 596, 320, 32, 0x111122).setStrokeStyle(1, 0x4488cc);
+    this.add.text(W/2, 596, code, { fontSize: '18px', fill: '#FFD700', fontStyle: 'bold' }).setOrigin(0.5);
+    this.add.text(W/2, 616, 'Enter this code on another device to sync your progress', { fontSize: '11px', fill: '#445566' }).setOrigin(0.5);
+
+    const importBtn = this.add.text(W/2, 638, '↓  Import from code', { fontSize: '14px', fill: '#446688' })
+      .setOrigin(0.5).setInteractive({ useHandCursor: true });
+    importBtn.on('pointerover', () => importBtn.setStyle({ fill: '#88aacc' }));
+    importBtn.on('pointerout',  () => importBtn.setStyle({ fill: '#446688' }));
+    importBtn.on('pointerdown', () => this._showImport(W, H));
+
     // ── Reset progress ────────────────────────────────────────────────────
     const resetG = this.add.graphics();
     resetG.lineStyle(1, 0x661111, 0.6);
@@ -181,6 +195,76 @@ class SettingsScene extends Phaser.Scene {
         .filter(c => c.type === 'Text' && (c.text === '⚠  Are you sure?' || c.text.includes('This will delete')))
         .forEach(t => t.destroy());
     });
+  }
+
+  _showImport(W, H) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.78);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:monospace';
+
+    const box = document.createElement('div');
+    box.style.cssText = 'background:#0c0c1e;border:2px solid #5577aa;padding:32px;text-align:center;min-width:300px;border-radius:4px';
+
+    const title = document.createElement('p');
+    title.textContent = '↓  IMPORT SAVE';
+    title.style.cssText = 'color:#FFD700;font-size:18px;font-weight:bold;margin:0 0 8px';
+
+    const warn = document.createElement('p');
+    warn.textContent = 'This will replace your current progress.';
+    warn.style.cssText = 'color:#886633;font-size:12px;margin:0 0 18px';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'e.g. DARK-7842';
+    input.maxLength = 12;
+    input.style.cssText = 'width:200px;padding:10px;background:#1a1a2e;border:1px solid #4488cc;color:#fff;font-size:16px;text-align:center;border-radius:3px;outline:none;display:block;margin:0 auto 8px;box-sizing:border-box;text-transform:uppercase;letter-spacing:2px';
+
+    const status = document.createElement('p');
+    status.style.cssText = 'color:#cc4444;font-size:12px;margin:0 0 14px;min-height:16px';
+
+    const btnRow = document.createElement('div');
+    btnRow.style.cssText = 'display:flex;gap:10px;justify-content:center';
+
+    const importBtn = document.createElement('button');
+    importBtn.textContent = 'Import';
+    importBtn.style.cssText = 'padding:10px 24px;background:#1e3d7a;border:1px solid #4488cc;color:#fff;font-size:14px;cursor:pointer;border-radius:3px';
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.style.cssText = 'padding:10px 24px;background:#1a1a2e;border:1px solid #445566;color:#888;font-size:14px;cursor:pointer;border-radius:3px';
+
+    btnRow.appendChild(importBtn);
+    btnRow.appendChild(cancelBtn);
+    box.appendChild(title);
+    box.appendChild(warn);
+    box.appendChild(input);
+    box.appendChild(status);
+    box.appendChild(btnRow);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    setTimeout(() => input.focus(), 100);
+
+    const dismiss = () => overlay.remove();
+    cancelBtn.addEventListener('click', dismiss);
+
+    const doImport = async () => {
+      const code = input.value.trim().toUpperCase();
+      if (!code) return;
+      importBtn.textContent = 'Loading...';
+      importBtn.disabled = true;
+      status.textContent = '';
+      try {
+        await MetaProgress.importFromCode(code);
+        dismiss();
+        this.scene.restart();
+      } catch(e) {
+        status.textContent = 'Code not found. Check and try again.';
+        importBtn.textContent = 'Import';
+        importBtn.disabled = false;
+      }
+    };
+
+    importBtn.addEventListener('click', doImport);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') doImport(); });
   }
 
   saveVolumes(controlMode) {
